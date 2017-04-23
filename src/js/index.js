@@ -11,6 +11,7 @@ window.myGame = window.myGame || {};
         game.load.spritesheet('city', 'assets/sprites/city.png', 17, 17);
         game.load.spritesheet('charIcon', 'assets/sprites/charIcon.png', 15, 15);
         game.load.spritesheet('button', 'assets/sprites/buttons.png', 21, 21);
+        game.load.spritesheet('background', 'assets/sprites/background.png', 200, 112);
     }
 
     function create() {

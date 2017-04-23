@@ -30,11 +30,9 @@ const BAR_WIDTH = 48;
         this.add(new myGame.ButtonGroup(game, 122, 0));
 
         this.graphics = game.add.graphics(0, 0, this);
-        this.graphics.beginFill(color);
-        this.graphics.drawRect(0, 21, 200, 112);
 
-        this.adventurer = new myGame.Adventurer(game, 16, 95);
-        this.add(this.adventurer);
+        this.background = this.add(new myGame.Background(game));
+        this.adventurer = this.add(new myGame.Adventurer(game, 16, 95));
 
         this.bars = [
             new Bar(this, this.adventurer, 'health', 0xCC0000, 4),
