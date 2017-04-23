@@ -8,7 +8,7 @@ window.myGame = window.myGame || {};
         game.load.image('player', 'assets/sprites/player.png');
         game.load.image('map', 'assets/sprites/map.png');
         game.load.spritesheet('city', 'assets/sprites/city.png', 17, 17);
-        game.load.spritesheet('overworldCharacter', 'assets/sprites/overworldChars.png', 16, 16);
+        game.load.spritesheet('overworldCharacter', 'assets/sprites/overworldChars.png', 15, 15);
     }
 
     function create() {
