@@ -15,10 +15,16 @@ const BAR_WIDTH = 48;
         this.graphics.drawRect(21, this.y, this.context[this.key] / 100 * BAR_WIDTH, 3);
     };
 
-    const Panel = function (game, x, y, color, playerId) {
+    const Panel = function (game, x, y, playerId) {
         Phaser.Group.call(this, game);
         this.x = x;
         this.y = y;
+        this.playerId = playerId;
+        this.worldCharacter = null;  // set in world-map.js
+
+        this.area = this.add(game.add.sprite(0, 0, null));
+        this.area.width = 200;
+        this.area.height = 133;
 
         var hud = game.add.sprite(0, 0, 'panelHud');
         this.add(hud);
@@ -39,12 +45,24 @@ const BAR_WIDTH = 48;
             new Bar(this, this.adventurer, 'magic', 0x0066CC, 9),
             new Bar(this, this.adventurer, 'active', 0x009900, 14),
         ];
+
+        this.area.inputEnabled = true;
+        this.area.events.onInputOver.add(this.over, this);
+        this.area.events.onInputOut.add(this.out, this);
     };
     Panel.prototype = Object.create(Phaser.Group.prototype);
     Panel.prototype.constructor = Panel;
 
     Panel.prototype.performAction = function () {
         this.buttonGroup.setSelected('attack');
+    }
+
+    Panel.prototype.over = function () {
+        this.worldCharacter.highlight();
+    }
+
+    Panel.prototype.out = function () {
+        this.worldCharacter.dehighlight();
     }
 
     // no render fn?

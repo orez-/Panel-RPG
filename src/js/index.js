@@ -16,13 +16,16 @@ window.myGame = window.myGame || {};
 
     function create() {
         game.physics.startSystem(Phaser.Physics.ARCADE);
-        new myGame.Panel(this, 0, 0, 0xFF0000, 0);
-        new myGame.Panel(this, 0, 133, 0xFF8000, 1);
-        new myGame.Panel(this, 0, 266, 0xFFFF00, 2);
-        new myGame.Panel(this, 600, 0, 0x00BB00, 3);
-        new myGame.Panel(this, 600, 133, 0x0033BB, 4);
-        new myGame.Panel(this, 600, 266, 0x8000FF, 5);
-        worldMap = new myGame.WorldMap(this, myGame.citiesData);
+
+        var panels = [
+            new myGame.Panel(this, 0, 0, 0),
+            new myGame.Panel(this, 0, 133, 1),
+            new myGame.Panel(this, 0, 266, 2),
+            new myGame.Panel(this, 600, 0, 3),
+            new myGame.Panel(this, 600, 133, 4),
+            new myGame.Panel(this, 600, 266, 5),
+        ];
+        new myGame.WorldMap(this, myGame.citiesData, panels);
 
         game.stage.smoothed = false;
         game.stage.disableVisibilityChange = true;

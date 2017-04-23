@@ -3,7 +3,7 @@ window.myGame = window.myGame || {};
 (function(Phaser, myGame) {
     const fontStyle = { font: "12px Arial", fill: "#eeeeee", align: "center" };
 
-    const WorldMap = function (game, citiesData) {
+    const WorldMap = function (game, citiesData, panels) {
         Phaser.Group.call(this, game);
         this.x = 200;
         this.y = 0;
@@ -18,9 +18,12 @@ window.myGame = window.myGame || {};
             text.anchor.y = 1.125;
         });
 
+        this.characters = [];
         for (var i=0; i<6; i++) {
             var city = citiesData.cities[i];
-            this.add(new myGame.OverworldCharacter(game, i, city));
+            var character = this.add(new myGame.OverworldCharacter(game, i, city));
+            this.characters.push(character);
+            panels[i].worldCharacter = character;
         }
     };
     WorldMap.prototype = Object.create(Phaser.Group.prototype);

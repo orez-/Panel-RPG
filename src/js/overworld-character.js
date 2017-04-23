@@ -2,6 +2,7 @@ window.myGame = window.myGame || {};
 
 const DISTANCE_EPSILON = 25;
 const MOVE_SPEED = 30;
+const NUM_CHARS = 6;
 (function(Phaser, myGame) {
 
     const OverworldCharacter = function (game, playerId, startingCity) {
@@ -10,6 +11,7 @@ const MOVE_SPEED = 30;
         this.anchor.x = 0.5;
         this.anchor.y = 0.5;
         this.frame = playerId;
+        this.playerId = playerId;
 
         this.mapLocation = startingCity;
         this.currentGoal = null;
@@ -17,6 +19,14 @@ const MOVE_SPEED = 30;
     };
     OverworldCharacter.prototype = Object.create(Phaser.Sprite.prototype);
     OverworldCharacter.prototype.constructor = OverworldCharacter;
+
+    OverworldCharacter.prototype.highlight = function () {
+        this.frame = this.playerId + NUM_CHARS;
+    };
+
+    OverworldCharacter.prototype.dehighlight = function () {
+        this.frame = this.playerId;
+    };
 
     OverworldCharacter.prototype.update = function () {
         if (!this.currentGoal) {
