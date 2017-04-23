@@ -13,7 +13,7 @@ const BAR_WIDTH = 48;
     Bar.prototype.render = function () {
         this.graphics.beginFill(this.color);
         this.graphics.drawRect(21, this.y, this.context[this.key] / 100 * BAR_WIDTH, 3);
-    }
+    };
 
     const Panel = function (game, x, y, color, playerId) {
         Phaser.Group.call(this, game);
@@ -27,7 +27,7 @@ const BAR_WIDTH = 48;
         icon.frame = playerId + 6;
         this.add(icon);
 
-        this.add(new myGame.ButtonGroup(game, 122, 0));
+        this.buttonGroup = this.add(new myGame.ButtonGroup(game, 122, 0));
 
         this.graphics = game.add.graphics(0, 0, this);
 
@@ -42,6 +42,10 @@ const BAR_WIDTH = 48;
     };
     Panel.prototype = Object.create(Phaser.Group.prototype);
     Panel.prototype.constructor = Panel;
+
+    Panel.prototype.performAction = function () {
+        this.buttonGroup.setSelected('attack');
+    }
 
     // no render fn?
     Panel.prototype.update = function () {

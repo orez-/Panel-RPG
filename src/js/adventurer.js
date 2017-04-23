@@ -17,6 +17,9 @@ window.myGame = window.myGame || {};
         this.active++;
         if (this.active >= 100) {
             this.active = 0;
+            this.parent.performAction();
+            // Do the selected action
+            // Reset the action to the default: attack
         }
     };
 
