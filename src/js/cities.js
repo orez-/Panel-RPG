@@ -27,7 +27,7 @@ window.myGame = window.myGame || {};
             One: {
                 Bar: {waypoints: []},
                 Foo: {waypoints: [{x: 0, y: 95}, 'dateline', {x: 400, y: 90}]},
-                Two: {},
+                Two: {waypoints: [{x: 46, y: 90}]},
                 Zambia: {},
             },
             Two: {
@@ -46,11 +46,11 @@ window.myGame = window.myGame || {};
                 One: null,
             },
             Baz: {
-                Bar: {},
+                Bar: {waypoints: [{x: 161, y: 127}, {x: 130, y: 120}]},
                 Two: null,
                 Zimbabwe: {},
                 Three: null,
-                Bang: {},
+                Bang: {waypoints: [{x: 212, y: 129}]},
             },
             Bar: {
                 Baz: null,
@@ -106,7 +106,7 @@ window.myGame = window.myGame || {};
                 Salamander: {},
                 Zambia: null,
                 Zimbabwe: null,
-                "Sim City": {},
+                "Sim City": {waypoints: [{x: 226, y: 292}]},
             },
             Salamander: {
                 Summarily: {waypoints: [{x: 117, y: 311}, {x: 0, y: 312}, 'dateline', {x: 400, y: 312}]},
