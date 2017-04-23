@@ -1,14 +1,21 @@
 window.myGame = window.myGame || {};
 
 (function(Phaser, myGame) {
+    const fontStyle = { font: "12px Arial", fill: "#eeeeee", align: "center" };
+
     const WorldMap = function (game, cities) {
         Phaser.Group.call(this, game);
         this.x = 200;
         this.y = 0;
         this.add(game.add.sprite(0, 0, 'map'));
 
-        cities.forEach((city) => {
-            this.add(new myGame.City(game, city));
+        cities.forEach((cityData) => {
+            var text = game.add.text(cityData.x, cityData.y, cityData.name, fontStyle, this);
+            text.visible = false;
+            var city = new myGame.City(game, cityData, text);
+            this.add(city);
+            text.anchor.x = 0.5;
+            text.anchor.y = 1.125;
         });
     };
     WorldMap.prototype = Object.create(Phaser.Group.prototype);
