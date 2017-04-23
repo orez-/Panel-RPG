@@ -37,12 +37,12 @@ window.myGame = window.myGame || {};
             },
             Three: {
                 Baz: {},
-                Bang: {},
-                Foo: {},
+                Bang: {waypoints: [{x: 250, y: 119}]},
+                Foo: {waypoints: [{x: 321, y: 67}]},
             },
             Foo: {
-                Three: {},
-                Bang: {},
+                Three: null,
+                Bang: {waypoints: [{x: 326, y: 95}, {x: 266, y: 103}]},
                 One: null,
             },
             Baz: {
@@ -60,7 +60,7 @@ window.myGame = window.myGame || {};
             },
             Bang: {
                 Zamboni: {},
-                Zaire: {},
+                Zaire: {waypoints: [{x: 289, y: 181}]},
                 Baz: null,
                 Three: null,
                 Foo: null,
@@ -85,8 +85,8 @@ window.myGame = window.myGame || {};
             Zambia: {
                 One: null,
                 Bazinga: null,
-                "Bob Saget": {},
-                Salamander: {},
+                "Bob Saget": {waypoints: [{x: 108, y: 207}, {x: 132, y: 224}, {x: 180, y: 227}]},
+                Salamander: {waypoints: [{x: 88, y: 220}, {x: 92, y: 247}, {x: 105, y: 262}, {x: 131, y: 267}]},
                 Zaire: {waypoints: [{x: 0, y: 205}, 'dateline', {x: 400, y: 203}]},
                 Summarily: {waypoints: [{x: 0, y: 263}, 'dateline', {x: 400, y: 260}]},
             },
@@ -99,7 +99,7 @@ window.myGame = window.myGame || {};
                 Zimbabwe: null,
                 Zamboni: null,
                 Zaire: null,
-                Summarily: {},
+                Summarily: {waypoints: [{x: 303, y: 264}]},
                 "Sim City": {},
             },
             "Bob Saget": {
@@ -109,21 +109,21 @@ window.myGame = window.myGame || {};
                 "Sim City": {},
             },
             Salamander: {
-                Summarily: {waypoints: [{x: 0, y: 312}, 'dateline', {x: 400, y: 312}]},
+                Summarily: {waypoints: [{x: 117, y: 311}, {x: 0, y: 312}, 'dateline', {x: 400, y: 312}]},
                 Zambia: null,
                 "Bob Saget": null,
-                Soonish: {},
+                Soonish: {waypoints: [{x: 165, y: 279}, {x: 181, y: 293}, {x: 178, y: 320}]},
             },
             "Sim City": {
                 Soonish: {},
                 "Bob Saget": null,
                 Zoombini: null,
-                Summarily: {},
+                Summarily: {waypoints: [{x: 308, y: 299}]},
             },
             Summarily: {
                 "Sim City": null,
                 Zoombini: null,
-                Soonish: {},
+                Soonish: {waypoints: [{x: 269, y: 323}, {x: 240, y: 358}]},
                 Zambia: null,
                 Salamander: null,
             },
