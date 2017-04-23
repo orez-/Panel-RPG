@@ -32,7 +32,6 @@ window.myGame = window.myGame || {};
     }
 
     function highlightCity(_, city) {
-        console.log(city);
         city.frame = 1;
     }
 

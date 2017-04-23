@@ -20,14 +20,11 @@ const MOVE_SPEED = 30;
 
     OverworldCharacter.prototype.update = function () {
         if (!this.currentGoal) {
-            // console.log("pick a goal");
             var possiblePaths = myGame.citiesData.pathsFrom(this.mapLocation.name);
-            // console.log(possiblePaths);
             var key = Phaser.ArrayUtils.getRandomItem(Object.keys(possiblePaths));
             if (!key) {return;}
-            console.log(this.frame + " next stop: ", key);
+            // console.log(this.frame + " next stop: ", key);
             this.mapLocation = possiblePaths[key];
-            // console.log(this.mapLocation);
             this.pathIndex = 0;
             this.currentGoal = this.mapLocation.waypoints[0];
             this.game.physics.arcade.moveToXY(this, this.currentGoal.x, this.currentGoal.y, MOVE_SPEED);
@@ -54,7 +51,7 @@ const MOVE_SPEED = 30;
             else {
                 // In city
                 this.mapLocation = myGame.citiesData.citiesByName[this.mapLocation.arriving];
-                console.log(this.frame + " arriving in", this.mapLocation);
+                // console.log(this.frame + " arriving in", this.mapLocation);
                 this.currentGoal = null;
                 this.body.velocity.x = 0;
                 this.body.velocity.y = 0;

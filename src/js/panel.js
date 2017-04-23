@@ -1,16 +1,18 @@
 window.myGame = window.myGame || {};
 
+const BAR_WIDTH = 48;
 (function(Phaser, myGame) {
+    const Bar = function (panel, context, key, color, y) {
+        this.graphics = panel.graphics;
+        this.color = color;
+        this.graphics.beginFill(this.color);
+        this.graphics.drawRect(21, y, context[key] / 100 * BAR_WIDTH, 3);
+    };
+
     const Panel = function (game, x, y, color, playerId) {
         Phaser.Group.call(this, game);
         this.x = x;
         this.y = y;
-        graphics = game.add.graphics(0, 0, this);
-        graphics.beginFill(color);
-        graphics.drawRect(0, 0, 200, 133);
-
-        this.adventurer = new myGame.Adventurer(game, 16, 95);
-        this.add(this.adventurer);
 
         var hud = game.add.sprite(0, 0, 'panelHud');
         this.add(hud);
@@ -20,6 +22,17 @@ window.myGame = window.myGame || {};
         this.add(icon);
 
         this.add(new myGame.ButtonGroup(game, 122, 0));
+
+        this.graphics = game.add.graphics(0, 0, this);
+        this.graphics.beginFill(color);
+        this.graphics.drawRect(0, 21, 200, 112);
+
+        this.adventurer = new myGame.Adventurer(game, 16, 95);
+        this.add(this.adventurer);
+
+        new Bar(this, this.adventurer, 'health', 0xCC0000, 4);
+        new Bar(this, this.adventurer, 'magic', 0x0066CC, 9);
+        new Bar(this, this.adventurer, 'active', 0x009900, 14);
     };
     Panel.prototype = Object.create(Phaser.Group.prototype);
     Panel.prototype.constructor = Panel;
