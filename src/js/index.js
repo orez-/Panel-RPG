@@ -11,7 +11,6 @@ window.myGame = window.myGame || {};
     }
 
     function create() {
-        game.physics.startSystem(Phaser.Physics.ARCADE);
         new myGame.Panel(this, 0, 0, 0xFF0000);
         new myGame.Panel(this, 0, 133, 0xFF8000);
         new myGame.Panel(this, 0, 266, 0xFFFF00);
@@ -24,11 +23,11 @@ window.myGame = window.myGame || {};
     }
 
     function update() {
-        game.physics.arcade.getObjectsUnderPointer(game.input.mousePointer, worldMap, highlightCity, this, null);
     }
 
     function highlightCity(_, city) {
         console.log(city);
+        city.frame = 1;
     }
 
 })(window.Phaser, window.myGame);
