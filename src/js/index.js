@@ -7,18 +7,20 @@ window.myGame = window.myGame || {};
     function preload() {
         game.load.image('player', 'assets/sprites/player.png');
         game.load.image('map', 'assets/sprites/map.png');
+        game.load.image('panelHud', 'assets/sprites/panel_hud.png');
         game.load.spritesheet('city', 'assets/sprites/city.png', 17, 17);
-        game.load.spritesheet('overworldCharacter', 'assets/sprites/overworldChars.png', 15, 15);
+        game.load.spritesheet('charIcon', 'assets/sprites/charIcon.png', 15, 15);
+        game.load.spritesheet('button', 'assets/sprites/buttons.png', 21, 21);
     }
 
     function create() {
         game.physics.startSystem(Phaser.Physics.ARCADE);
-        new myGame.Panel(this, 0, 0, 0xFF0000);
-        new myGame.Panel(this, 0, 133, 0xFF8000);
-        new myGame.Panel(this, 0, 266, 0xFFFF00);
-        new myGame.Panel(this, 600, 0, 0x00BB00);
-        new myGame.Panel(this, 600, 133, 0x0033BB);
-        new myGame.Panel(this, 600, 266, 0x8000FF);
+        new myGame.Panel(this, 0, 0, 0xFF0000, 0);
+        new myGame.Panel(this, 0, 133, 0xFF8000, 1);
+        new myGame.Panel(this, 0, 266, 0xFFFF00, 2);
+        new myGame.Panel(this, 600, 0, 0x00BB00, 3);
+        new myGame.Panel(this, 600, 133, 0x0033BB, 4);
+        new myGame.Panel(this, 600, 266, 0x8000FF, 5);
         worldMap = new myGame.WorldMap(this, myGame.citiesData);
 
         game.stage.smoothed = false;

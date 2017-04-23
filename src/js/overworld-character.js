@@ -5,7 +5,7 @@ const MOVE_SPEED = 30;
 (function(Phaser, myGame) {
 
     const OverworldCharacter = function (game, playerId, startingCity) {
-        Phaser.Sprite.call(this, game, startingCity.x, startingCity.y, 'overworldCharacter');
+        Phaser.Sprite.call(this, game, startingCity.x, startingCity.y, 'charIcon');
         game.physics.arcade.enable(this);
         this.anchor.x = 0.5;
         this.anchor.y = 0.5;
