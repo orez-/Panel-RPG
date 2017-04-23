@@ -21,6 +21,8 @@ window.myGame = window.myGame || {};
         new myGame.Panel(this, 600, 266, 0x8000FF);
         worldMap = new myGame.WorldMap(this, myGame.citiesData);
 
+        game.stage.smoothed = false;
+        game.stage.disableVisibilityChange = true;
         game.renderer.renderSession.roundPixels = true;
     }
 

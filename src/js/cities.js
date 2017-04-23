@@ -26,29 +26,112 @@ window.myGame = window.myGame || {};
         _paths: {  // {departing: {arriving: path}}
             One: {
                 Bar: {waypoints: []},
-                Foo: {},
+                Foo: {waypoints: [{x: 0, y: 95}, 'dateline', {x: 400, y: 90}]},
                 Two: {},
+                Zambia: {},
             },
             Two: {
+                One: null,
                 Bar: {},
                 Baz: {},
             },
-            "Three": {},
-            "Foo": {},
-            "Baz": {},
-            "Bar": {},
-            "Bang": {},
-            "Bazinga": {},
-            "Zamboni": {},
-            "Zimbabwe": {},
-            "Zambia": {},
-            "Zaire": {},
-            "Zoombini": {},
-            "Bob Saget": {},
-            "Salamander": {},
-            "Sim City": {},
-            "Summarily": {},
-            "Soonish": {},
+            Three: {
+                Baz: {},
+                Bang: {},
+                Foo: {},
+            },
+            Foo: {
+                Three: {},
+                Bang: {},
+                One: null,
+            },
+            Baz: {
+                Bar: {},
+                Two: null,
+                Zimbabwe: {},
+                Three: null,
+                Bang: {},
+            },
+            Bar: {
+                Baz: null,
+                One: null,
+                Two: null,
+                Bazinga: {},
+            },
+            Bang: {
+                Zamboni: {},
+                Zaire: {},
+                Baz: null,
+                Three: null,
+                Foo: null,
+            },
+            Bazinga: {
+                Bar: null,
+                Zambia: {},
+                Zimbabwe: {},
+            },
+            Zamboni: {
+                Zimbabwe: {},
+                Bang: null,
+                Zoombini: {},
+            },
+            Zimbabwe: {
+                Baz: null,
+                Zamboni: null,
+                Bazinga: null,
+                "Bob Saget": {},
+                Zoombini: {},
+            },
+            Zambia: {
+                One: null,
+                Bazinga: null,
+                "Bob Saget": {},
+                Salamander: {},
+                Zaire: {waypoints: [{x: 0, y: 205}, 'dateline', {x: 400, y: 203}]},
+                Summarily: {waypoints: [{x: 0, y: 263}, 'dateline', {x: 400, y: 260}]},
+            },
+            Zaire: {
+                Bang: null,
+                Zoombini: {},
+                Zambia: null,
+            },
+            Zoombini: {
+                Zimbabwe: null,
+                Zamboni: null,
+                Zaire: null,
+                Summarily: {},
+                "Sim City": {},
+            },
+            "Bob Saget": {
+                Salamander: {},
+                Zambia: null,
+                Zimbabwe: null,
+                "Sim City": {},
+            },
+            Salamander: {
+                Summarily: {waypoints: [{x: 0, y: 312}, 'dateline', {x: 400, y: 312}]},
+                Zambia: null,
+                "Bob Saget": null,
+                Soonish: {},
+            },
+            "Sim City": {
+                Soonish: {},
+                "Bob Saget": null,
+                Zoombini: null,
+                Summarily: {},
+            },
+            Summarily: {
+                "Sim City": null,
+                Zoombini: null,
+                Soonish: {},
+                Zambia: null,
+                Salamander: null,
+            },
+            Soonish: {
+                Salamander: null,
+                "Sim City": null,
+                Summarily: null,
+            },
         },
         pathsFrom: function (cityName) {
             var paths = this._paths[cityName];
@@ -76,9 +159,8 @@ window.myGame = window.myGame || {};
             var path = paths[arriving];
             if (!path) {  // we'll backfill you later
                 return;
-            };
+            }
             path.waypoints = path.waypoints || [];
-            path.dateline = path.dateline || false;
 
             // Add start and end coordinates to waypoints
             path.waypoints.unshift({x: departingCity.x, y: departingCity.y});
@@ -100,7 +182,7 @@ window.myGame = window.myGame || {};
             var path = paths[arriving];
             var reversePath = myGame.citiesData._paths[arriving][departing];
             if (!path && !reversePath) {
-                throw Error("no definition for path or its reverse");
+                throw Error("no definition for path or its reverse " + arriving + " " + departing);
             }
             if (!path) {
                 paths[arriving] = {

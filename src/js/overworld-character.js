@@ -41,6 +41,13 @@ const MOVE_SPEED = 30;
             if (this.pathIndex < this.mapLocation.waypoints.length) {
                 // Next in path
                 this.currentGoal = this.mapLocation.waypoints[this.pathIndex];
+                if (this.currentGoal == 'dateline') {  // special case teleport across the dateline
+                    var teleport = this.mapLocation.waypoints[this.pathIndex + 1];
+                    this.x = teleport.x;
+                    this.y = teleport.y;
+                    this.pathIndex += 2;
+                    this.currentGoal = this.mapLocation.waypoints[this.pathIndex];
+                }
                 this.game.physics.arcade.moveToXY(this, this.currentGoal.x, this.currentGoal.y, MOVE_SPEED);
             }
             else {
