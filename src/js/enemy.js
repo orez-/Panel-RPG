@@ -4,17 +4,17 @@ window.myGame = window.myGame || {};
     const Enemy = function (game) {
         var x = 200;
         var y = 95;
-        Phaser.Sprite.call(this, game, x, y, 'knife_goblin');
+        myGame.Combatant.call(this, game, x, y, 'knife_goblin');
         this.frame = 1;
 
-        this.health = {value: 66, max: 100};
+        this.health = {value: 35, max: 100};
         this.active = {value: 50, max: 100};
 
         this.attack = 5;
         this.defense = 0;
 
     };
-    Enemy.prototype = Object.create(Phaser.Sprite.prototype);
+    Enemy.prototype = Object.create(myGame.Combatant.prototype);
     Enemy.prototype.constructor = Enemy;
 
     Enemy.prototype.enter = function (cb) {
@@ -34,14 +34,14 @@ window.myGame = window.myGame || {};
         }, this);
         moveX.start();
         moveY.start();
-    }
+    };
 
     Enemy.prototype.advanceActiveBar = function () {
         this.active.value++;
         if (this.active.value >= this.active.max) {
             this.active.value = 0;
             console.log("Knife goblin attack!");
-            // this.parent.performAction();
+            this.parent.enemyAttack();
         }
     };
 

@@ -4,40 +4,7 @@ const State = {
     WALKING: 1,
     BATTLE: 2,
 };
-const BAR_WIDTH = 48;
 (function(Phaser, myGame) {
-    const Bar = function (game, panel, context, key, color, y) {
-        this.game = game;
-        this.graphics = panel.graphics;
-        this.color = color;
-        this.mainColor = color;
-        this.y = y;
-        this.context = context;
-        this.key = key;
-    };
-
-    Bar.prototype.render = function () {
-        this.graphics.beginFill(this.color);
-        var rawValue = this.context[this.key];
-        var value = Phaser.Math.clamp(rawValue.value, 0, rawValue.max);
-        this.graphics.drawRect(21, this.y, value / rawValue.max * BAR_WIDTH, 3);
-    };
-
-    Bar.prototype.flash = function () {
-        // Flash the bar quickly to call attention to it.
-        var colorBlend = {step: 0};
-        var duration = 1000;
-        var endColor = 0xffffff;
-        var timesToFlash = 2;
-        this.game.add.tween(colorBlend).to({step: 100}, duration, function (v) {
-            return (Math.sin((timesToFlash * 2 * v - 0.5) * Math.PI) + 1 ) / 2;
-        }, false)
-        .onUpdateCallback(() => {
-            this.color = Phaser.Color.interpolateColor(this.mainColor, endColor, 100, colorBlend.step, 1);
-        })
-        .start()
-    }
-
     const Panel = function (game, x, y, playerId) {
         Phaser.Group.call(this, game);
         this.x = x;
@@ -58,17 +25,19 @@ const BAR_WIDTH = 48;
 
         this.buttonGroup = this.add(new myGame.ButtonGroup(game, 122, 0));
 
-        this.graphics = game.add.graphics(0, 0, this);
-
         this.background = this.add(new myGame.Background(game));
         this.adventurer = this.add(new myGame.Adventurer(game, 16, 95));
 
         this.enemy = this.add(new myGame.Enemy(game));
 
+        this.graphics = game.add.graphics(0, 0, this);
         this.bars = [
-            new Bar(game, this, this.adventurer, 'health', 0xCC0000, 4),
-            new Bar(game, this, this.adventurer, 'magic', 0x0066CC, 9),
-            new Bar(game, this, this.adventurer, 'active', 0x009900, 14),
+            new myGame.Bar(
+                game, this, this.adventurer, 'health', 0xCC0000, 0x545454, 21, 4, 48),
+            new myGame.Bar(
+                game, this, this.adventurer, 'magic', 0x0066CC, 0x545454, 21, 9, 48),
+            new myGame.Bar(
+                game, this, this.adventurer, 'active', 0x009900, 0x545454, 21, 14, 48),
         ];
 
         this.area.inputEnabled = true;
@@ -79,7 +48,14 @@ const BAR_WIDTH = 48;
     Panel.prototype.constructor = Panel;
 
     Panel.prototype.performAction = function () {
-        this.buttonGroup.setSelected('attack');
+        var action = this.buttonGroup.setSelected('attack');
+        if (action === 'attack') {
+            this.enemy.physicalDamage(this.adventurer.attack);
+        }
+    }
+
+    Panel.prototype.enemyAttack = function () {
+        this.adventurer.physicalDamage(this.enemy.attack);
     }
 
     Panel.prototype.over = function () {
@@ -104,6 +80,9 @@ const BAR_WIDTH = 48;
             this.enemy.enter(() => {
                 this.background.pauseScroll();
                 this.adventurer.beginBattleReady();
+                this.enemy.healthBar = new myGame.Bar(
+                    this.game, this, this.enemy, 'health', 0xCC0000, 0x111111,
+                    this.enemy.x, this.enemy.y, 32);
             });
         }
     }
@@ -114,6 +93,9 @@ const BAR_WIDTH = 48;
         this.bars.forEach(function (bar) {
             bar.render();
         });
+        if (this.enemy.healthBar) {
+            this.enemy.healthBar.render();
+        }
     };
     myGame.Panel = Panel;
 })(window.Phaser, window.myGame);

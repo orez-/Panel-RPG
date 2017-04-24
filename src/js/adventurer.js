@@ -2,7 +2,7 @@ window.myGame = window.myGame || {};
 
 (function(Phaser, myGame) {
     const Adventurer = function (game, x, y) {
-        Phaser.Sprite.call(this, game, x, y, 'player');
+        myGame.Combatant.call(this, game, x, y, 'player');
 
         this.health = {value: 66, max: 100};
         this.magic = {value: 33, max: 100};
@@ -11,7 +11,7 @@ window.myGame = window.myGame || {};
         this.attack = 10;
         this.defense = 1;
     };
-    Adventurer.prototype = Object.create(Phaser.Sprite.prototype);
+    Adventurer.prototype = Object.create(myGame.Combatant.prototype);
     Adventurer.prototype.constructor = Adventurer;
 
     Adventurer.prototype.beginBattleReady = function () {

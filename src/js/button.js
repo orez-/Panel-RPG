@@ -3,9 +3,10 @@ window.myGame = window.myGame || {};
 const NUM_ICONS = 5;
 (function(Phaser, myGame) {
 
-    const Button = function (game, x, buttonId) {
+    const Button = function (game, x, buttonId, key) {
         Phaser.Sprite.call(this, game, x * 19, 0, 'button');
 
+        this.key = key;
         this.frameColumn = buttonId;
         this.frame = this.frameColumn;
         this.inputEnabled = true;
@@ -39,10 +40,10 @@ const NUM_ICONS = 5;
         this.y = y;
 
         this.buttons = {
-            attack: this.add(new myGame.Button(game, 0, 1)),
-            damageMagic: this.add(new myGame.Button(game, 1, 4)),
-            healMagic: this.add(new myGame.Button(game, 2, 3)),
-            potion: this.add(new myGame.Button(game, 3, 2)),
+            attack: this.add(new myGame.Button(game, 0, 1, 'attack')),
+            damageMagic: this.add(new myGame.Button(game, 1, 4, 'damageMagic')),
+            healMagic: this.add(new myGame.Button(game, 2, 3, 'healMagic')),
+            potion: this.add(new myGame.Button(game, 3, 2, 'potion')),
         };
         this.setSelected('attack');
     };
@@ -51,7 +52,9 @@ const NUM_ICONS = 5;
 
     ButtonGroup.prototype.setSelected = function (button) {
         // Can either pass a button object or the name of a button
+        var lastSelection = null;
         if (this.selected) {
+            lastSelection = this.selected.key;
             this.selected.deselect();
         }
         var buttonLookup = this.buttons[button];
@@ -62,6 +65,7 @@ const NUM_ICONS = 5;
             this.selected = buttonLookup;
         }
         this.selected.select();
+        return lastSelection;
     };
 
     myGame.Button = Button;
