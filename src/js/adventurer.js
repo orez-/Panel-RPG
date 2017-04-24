@@ -4,19 +4,28 @@ window.myGame = window.myGame || {};
     const Adventurer = function (game, x, y) {
         Phaser.Sprite.call(this, game, x, y, 'player');
 
-        this.health = 66;
-        this.magic = 33;
-        this.active = 50;
+        this.health = {value: 66, max: 100};
+        this.magic = {value: 33, max: 100};
+        this.active = {value: 50, max: 100};
 
-        game.time.events.loop(40, this.advanceActiveBar, this);
+        this.attack = 10;
+        this.defense = 1;
     };
     Adventurer.prototype = Object.create(Phaser.Sprite.prototype);
     Adventurer.prototype.constructor = Adventurer;
 
+    Adventurer.prototype.beginBattleReady = function () {
+        this.scrollLoop = this.game.time.events.loop(40, this.advanceActiveBar, this);
+    };
+
+    Adventurer.prototype.resetBattleReady = function (argument) {
+        this.game.time.events.remove(this.scrollLoop);
+    }
+
     Adventurer.prototype.advanceActiveBar = function () {
-        this.active++;
-        if (this.active >= 100) {
-            this.active = 0;
+        this.active.value++;
+        if (this.active.value >= this.active.max) {
+            this.active.value = 0;
             this.parent.performAction();
             // Do the selected action
             // Reset the action to the default: attack

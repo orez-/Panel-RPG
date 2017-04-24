@@ -1,5 +1,9 @@
 window.myGame = window.myGame || {};
 
+const State = {
+    WALKING: 1,
+    BATTLE: 2,
+};
 const BAR_WIDTH = 48;
 (function(Phaser, myGame) {
     const Bar = function (panel, context, key, color, y) {
@@ -12,7 +16,9 @@ const BAR_WIDTH = 48;
 
     Bar.prototype.render = function () {
         this.graphics.beginFill(this.color);
-        this.graphics.drawRect(21, this.y, this.context[this.key] / 100 * BAR_WIDTH, 3);
+        var rawValue = this.context[this.key];
+        var value = Phaser.Math.clamp(rawValue.value, 0, rawValue.max);
+        this.graphics.drawRect(21, this.y, value / rawValue.max * BAR_WIDTH, 3);
     };
 
     const Panel = function (game, x, y, playerId) {
@@ -26,9 +32,9 @@ const BAR_WIDTH = 48;
         this.area.width = 200;
         this.area.height = 133;
 
-        var hud = game.add.sprite(0, 0, 'panelHud');
-        this.add(hud);
+        this.state = State.WALKING;
 
+        this.add(game.add.sprite(0, 0, 'panelHud'));
         var icon = game.add.sprite(3, 3, 'charIcon');
         icon.frame = playerId + 6;
         this.add(icon);
@@ -63,6 +69,23 @@ const BAR_WIDTH = 48;
 
     Panel.prototype.out = function () {
         this.worldCharacter.dehighlight();
+    }
+
+    Panel.prototype.setState = function (state) {
+        var stateLookup = State[state];
+        if (stateLookup) {
+            state = stateLookup;
+        }
+        this.state = state;
+        console.log(this.background.moveLoop);
+        if (this.state === State.WALKING) {
+            this.background.beginScroll();
+            this.adventurer.resetBattleReady();
+        }
+        else if (this.state === State.BATTLE) {
+            this.background.pauseScroll();
+            this.adventurer.beginBattleReady();
+        }
     }
 
     // no render fn?

@@ -6,6 +6,7 @@ window.myGame = window.myGame || {};
 
     function preload() {
         game.load.image('player', 'assets/sprites/player.png');
+        game.load.image('knife_goblin', 'assets/sprites/knife_goblin.png');
         game.load.image('map', 'assets/sprites/map.png');
         game.load.image('panelHud', 'assets/sprites/panel_hud.png');
         game.load.spritesheet('city', 'assets/sprites/city.png', 17, 17);
@@ -25,6 +26,7 @@ window.myGame = window.myGame || {};
             new myGame.Panel(this, 600, 133, 4),
             new myGame.Panel(this, 600, 266, 5),
         ];
+        myGame.panels = panels;  // for debug
         new myGame.WorldMap(this, myGame.citiesData, panels);
 
         game.stage.smoothed = false;

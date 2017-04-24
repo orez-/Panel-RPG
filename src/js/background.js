@@ -8,10 +8,18 @@ window.myGame = window.myGame || {};
         this.leftPanel = this.add(new BackgroundSegment(game, 0));
         this.rightPanel = this.add(new BackgroundSegment(game, 1));
 
-        game.time.events.loop(40, this.advanceScene, this);
+        this.beginScroll();
     };
     Background.prototype = Object.create(Phaser.Group.prototype);
     Background.prototype.constructor = Background;
+
+    Background.prototype.beginScroll = function () {
+        this.scrollLoop = this.game.time.events.loop(40, this.advanceScene, this);
+    };
+
+    Background.prototype.pauseScroll = function (argument) {
+        this.game.time.events.remove(this.scrollLoop);
+    }
 
     Background.prototype.advanceScene = function () {
         this.leftPanel.x -= 1;
