@@ -6,6 +6,7 @@ const IDLE_X = 70;
         var x = 200;
         var y = 95;
         myGame.Combatant.call(this, game, x, y, 'knife_goblin');
+        this.sprite.animations.add('die', [2, 5]);
 
         this.graphics = game.add.graphics(0, 0, this);
 
@@ -33,7 +34,7 @@ const IDLE_X = 70;
         // Allow the enemy to make their entrance, after which the
         // callback is run.
         this.lungeTo(IDLE_X, 30, 750, () => {
-            this.game.time.events.loop(40, this.advanceActiveBar, this);
+            this.activeTimer = this.game.time.events.loop(40, this.advanceActiveBar, this);
             cb();
         });
     };
@@ -41,7 +42,6 @@ const IDLE_X = 70;
     Enemy.prototype.beginBattleReady = function () {
         this.healthBar = new myGame.Bar(
             this.game, this.graphics, this, 'health', 0xCC0000, 0x111111,
-            // this.x, this.y, 32);
             0, 0, 32);
     }
 
@@ -60,6 +60,12 @@ const IDLE_X = 70;
             this.parent.enemyAttack();
         }
     };
+
+    Enemy.prototype.die = function () {
+        this.game.time.events.remove(this.activeTimer);
+        this.active.value = 0;
+        this.sprite.animations.play('die', 5);
+    }
 
     // Again, no render fn?
     Enemy.prototype.update = function () {
