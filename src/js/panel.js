@@ -79,8 +79,9 @@ const State = {
             this.adventurer.resetBattleReady();
         }
         else if (this.state === State.BATTLE) {
+            this.adventurer.beginBattleAnimation();
+            this.background.pauseScroll();
             this.enemy.enterAnimation(() => {
-                this.background.pauseScroll();
                 this.adventurer.beginBattleReady();
                 this.enemy.beginBattleReady();
             });

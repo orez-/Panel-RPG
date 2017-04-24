@@ -31,6 +31,7 @@ window.myGame = window.myGame || {};
 
         game.stage.smoothed = false;
         game.stage.disableVisibilityChange = true;
+        Phaser.Canvas.setImageRenderingCrisp(game.canvas);
         game.renderer.renderSession.roundPixels = true;
     }
 
