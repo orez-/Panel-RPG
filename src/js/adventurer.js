@@ -2,7 +2,7 @@ window.myGame = window.myGame || {};
 
 
 (function(Phaser, myGame) {
-    const FRAMES_WIDTH = 4;
+    const FRAMES_WIDTH = 5;
 
     function animationColumn(column, y0, y1) {
         var frames = [];
@@ -20,6 +20,8 @@ window.myGame = window.myGame || {};
         this.sprite.animations.add('battleReady', animationColumn(2, 0, 2));
         this.sprite.animations.add('battleIdle', animationColumn(2, 2, 3));
         this.sprite.animations.add('attack', animationColumn(3, 0, 0));
+        this.sprite.animations.add('die', animationColumn(4, 0, 2));
+        this.sprite.animations.add('die2', animationColumn(4, 2, 4));  // variable fps
         this.sprite.animations.play('walk', 10, true);
 
         this.health = {value: 66, max: 100};
@@ -54,6 +56,18 @@ window.myGame = window.myGame || {};
             // Reset the action to the default: attack
         }
     };
+
+    Adventurer.prototype.die = function () {
+        this.game.time.events.remove(this.activeTimer);
+        this.active.value = 0;
+        this.deathAnimation();
+    }
+
+    Adventurer.prototype.deathAnimation = function () {
+        this.sprite.animations.play('die', 10).onComplete.add(function () {
+            this.sprite.animations.play('die2', 2);
+        }, this);
+    }
 
     Adventurer.prototype.attackAnimation = function (cb) {
         this.sprite.animations.play('attack', 10);

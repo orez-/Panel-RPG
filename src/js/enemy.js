@@ -26,7 +26,6 @@ const IDLE_X = 70;
             this.sprite.frame = 0;
             cb();
         }
-        console.log(this.game);
         myGame.Combatant.prototype.lungeTo.call(this, x, y, duration, newCb);
     }
 

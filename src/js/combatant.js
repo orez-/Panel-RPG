@@ -16,8 +16,15 @@ window.myGame = window.myGame || {};
     Combatant.prototype = Object.create(Phaser.Group.prototype);
     Combatant.prototype.constructor = Combatant;
     Combatant.prototype.physicalDamage = function (amount) {
-        this.health.value = Math.max(0, this.health.value - amount - this.defense);
+        this.health.value -= amount - this.defense;
+        if (this.health.value <= 0) {
+            this.health.value = 0;
+            this.active.value = 0;
+            this.die();
+        }
     };
+
+    Combatant.prototype.die = function () {}
 
     Combatant.prototype.lungeTo = function (x, y, duration, cb) {
         // y is the height of the jump
