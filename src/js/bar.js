@@ -1,9 +1,9 @@
 window.myGame = window.myGame || {};
 
 (function(Phaser, myGame) {
-    const Bar = function (game, panel, context, key, color, barColor, x, y, width) {
+    const Bar = function (game, graphics, context, key, color, barColor, x, y, width) {
         this.game = game;
-        this.graphics = panel.graphics;
+        this.graphics = graphics;
         this.color = color;
         this.barColor = barColor;
         this.mainColor = color;

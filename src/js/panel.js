@@ -33,11 +33,11 @@ const State = {
         this.graphics = game.add.graphics(0, 0, this);
         this.bars = [
             new myGame.Bar(
-                game, this, this.adventurer, 'health', 0xCC0000, 0x545454, 21, 4, 48),
+                game, this.graphics, this.adventurer, 'health', 0xCC0000, 0x545454, 21, 4, 48),
             new myGame.Bar(
-                game, this, this.adventurer, 'magic', 0x0066CC, 0x545454, 21, 9, 48),
+                game, this.graphics, this.adventurer, 'magic', 0x0066CC, 0x545454, 21, 9, 48),
             new myGame.Bar(
-                game, this, this.adventurer, 'active', 0x009900, 0x545454, 21, 14, 48),
+                game, this.graphics, this.adventurer, 'active', 0x009900, 0x545454, 21, 14, 48),
         ];
 
         this.area.inputEnabled = true;
@@ -55,7 +55,9 @@ const State = {
     }
 
     Panel.prototype.enemyAttack = function () {
-        this.adventurer.physicalDamage(this.enemy.attack);
+        this.enemy.attackAnimation(() => {
+            this.adventurer.physicalDamage(this.enemy.attack);
+        });
     }
 
     Panel.prototype.over = function () {
@@ -77,12 +79,10 @@ const State = {
             this.adventurer.resetBattleReady();
         }
         else if (this.state === State.BATTLE) {
-            this.enemy.enter(() => {
+            this.enemy.enterAnimation(() => {
                 this.background.pauseScroll();
                 this.adventurer.beginBattleReady();
-                this.enemy.healthBar = new myGame.Bar(
-                    this.game, this, this.enemy, 'health', 0xCC0000, 0x111111,
-                    this.enemy.x, this.enemy.y, 32);
+                this.enemy.beginBattleReady();
             });
         }
     }
@@ -90,12 +90,10 @@ const State = {
     // no render fn?
     Panel.prototype.update = function () {
         this.graphics.clear();
+        this.enemy.update();
         this.bars.forEach(function (bar) {
             bar.render();
         });
-        if (this.enemy.healthBar) {
-            this.enemy.healthBar.render();
-        }
     };
     myGame.Panel = Panel;
 })(window.Phaser, window.myGame);

@@ -43,6 +43,7 @@ const NUM_CHARS = 6;
         if (Phaser.Math.distanceSq(this.currentGoal.x, this.currentGoal.y, this.x, this.y) < DISTANCE_EPSILON) {
             // You made it!
             // XXX: http://www.html5gamedevs.com/topic/7332-how-to-stop-moveto/
+            // ehhh this really oughtta be a tween
             this.x = this.currentGoal.x;
             this.y = this.currentGoal.y;
             this.pathIndex++;
