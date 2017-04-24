@@ -5,7 +5,7 @@ window.myGame = window.myGame || {};
     let worldMap;
 
     function preload() {
-        game.load.image('player', 'assets/sprites/player.png');
+        game.load.spritesheet('player', 'assets/sprites/player.png', 32, 32);
         game.load.image('map', 'assets/sprites/map.png');
         game.load.image('panelHud', 'assets/sprites/panel_hud.png');
         game.load.spritesheet('knife_goblin', 'assets/sprites/knife_goblin.png', 32, 32);

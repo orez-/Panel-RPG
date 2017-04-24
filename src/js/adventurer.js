@@ -4,6 +4,9 @@ window.myGame = window.myGame || {};
     const Adventurer = function (game, x, y) {
         myGame.Combatant.call(this, game, x, y, 'player');
 
+        this.sprite.animations.add('walk', [1, 3, 5, 7, 9, 11]);
+        this.sprite.animations.play('walk', 10, true);
+
         this.health = {value: 66, max: 100};
         this.magic = {value: 33, max: 100};
         this.active = {value: 50, max: 100};
