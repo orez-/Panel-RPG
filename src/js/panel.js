@@ -46,6 +46,8 @@ const BAR_WIDTH = 48;
         this.background = this.add(new myGame.Background(game));
         this.adventurer = this.add(new myGame.Adventurer(game, 16, 95));
 
+        this.enemy = this.add(new myGame.Enemy(game));
+
         this.bars = [
             new Bar(this, this.adventurer, 'health', 0xCC0000, 4),
             new Bar(this, this.adventurer, 'magic', 0x0066CC, 9),
@@ -77,14 +79,15 @@ const BAR_WIDTH = 48;
             state = stateLookup;
         }
         this.state = state;
-        console.log(this.background.moveLoop);
         if (this.state === State.WALKING) {
             this.background.beginScroll();
             this.adventurer.resetBattleReady();
         }
         else if (this.state === State.BATTLE) {
-            this.background.pauseScroll();
-            this.adventurer.beginBattleReady();
+            this.enemy.enter(() => {
+                this.background.pauseScroll();
+                this.adventurer.beginBattleReady();
+            });
         }
     }
 

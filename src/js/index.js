@@ -6,9 +6,9 @@ window.myGame = window.myGame || {};
 
     function preload() {
         game.load.image('player', 'assets/sprites/player.png');
-        game.load.image('knife_goblin', 'assets/sprites/knife_goblin.png');
         game.load.image('map', 'assets/sprites/map.png');
         game.load.image('panelHud', 'assets/sprites/panel_hud.png');
+        game.load.spritesheet('knife_goblin', 'assets/sprites/knife_goblin.png', 32, 32);
         game.load.spritesheet('city', 'assets/sprites/city.png', 17, 17);
         game.load.spritesheet('charIcon', 'assets/sprites/charIcon.png', 15, 15);
         game.load.spritesheet('button', 'assets/sprites/buttons.png', 21, 21);
