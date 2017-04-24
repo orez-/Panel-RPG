@@ -20,22 +20,14 @@ const IDLE_X = 70;
     Enemy.prototype.constructor = Enemy;
 
     Enemy.prototype.lungeTo = function (x, y, duration, cb) {
-        // y is the height of the jump
+        // Normal lunge but with animations
         this.sprite.frame = 1;
-
-        var moveX = this.game.add.tween(this);
-        var moveY = this.game.add.tween(this);
-        moveX.to({x: x}, duration);
-        moveY.to({y: y}, duration, function (v) {
-            return -v * (v - 1) * 4
-        });
-
-        moveY.onComplete.add(function () {
+        var newCb = function() {
             this.sprite.frame = 0;
             cb();
-        }, this);
-        moveX.start();
-        moveY.start();
+        }
+        console.log(this.game);
+        myGame.Combatant.prototype.lungeTo.call(this, x, y, duration, newCb);
     }
 
     Enemy.prototype.enterAnimation = function (cb) {
@@ -55,7 +47,7 @@ const IDLE_X = 70;
     }
 
     Enemy.prototype.attackAnimation = function (cb) {
-        this.lungeTo(30, 70, 250, () => {
+        this.lungeTo(15, 70, 250, () => {
             var moveX = this.game.add.tween(this);
             moveX.to({x: IDLE_X}, 100).start();
             cb();

@@ -12,10 +12,6 @@ const State = {
         this.playerId = playerId;
         this.worldCharacter = null;  // set in world-map.js
 
-        this.area = this.add(game.add.sprite(0, 0, null));
-        this.area.width = 200;
-        this.area.height = 133;
-
         this.state = State.WALKING;
 
         this.add(game.add.sprite(0, 0, 'panelHud'));
@@ -40,6 +36,10 @@ const State = {
                 game, this.graphics, this.adventurer, 'active', 0x009900, 0x545454, 21, 14, 48),
         ];
 
+        this.area = this.add(game.add.sprite(0, 0, null));
+        this.area.width = 200;
+        this.area.height = 133;
+
         this.area.inputEnabled = true;
         this.area.events.onInputOver.add(this.over, this);
         this.area.events.onInputOut.add(this.out, this);
@@ -50,7 +50,9 @@ const State = {
     Panel.prototype.performAction = function () {
         var action = this.buttonGroup.setSelected('attack');
         if (action === 'attack') {
-            this.enemy.physicalDamage(this.adventurer.attack);
+            this.adventurer.attackAnimation(() => {
+                this.enemy.physicalDamage(this.adventurer.attack);
+            });
         }
     }
 

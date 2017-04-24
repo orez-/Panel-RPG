@@ -19,5 +19,19 @@ window.myGame = window.myGame || {};
         this.health.value = Math.max(0, this.health.value - amount - this.defense);
     };
 
+    Combatant.prototype.lungeTo = function (x, y, duration, cb) {
+        // y is the height of the jump
+        var moveX = this.game.add.tween(this);
+        var moveY = this.game.add.tween(this);
+        moveX.to({x: x}, duration);
+        moveY.to({y: y}, duration, function (v) {
+            return -v * (v - 1) * 4
+        });
+
+        moveY.onComplete.add(cb, this);
+        moveX.start();
+        moveY.start();
+    }
+
     myGame.Combatant = Combatant;
 })(window.Phaser, window.myGame);
