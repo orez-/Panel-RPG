@@ -6,9 +6,11 @@ const State = {
 };
 const BAR_WIDTH = 48;
 (function(Phaser, myGame) {
-    const Bar = function (panel, context, key, color, y) {
+    const Bar = function (game, panel, context, key, color, y) {
+        this.game = game;
         this.graphics = panel.graphics;
         this.color = color;
+        this.mainColor = color;
         this.y = y;
         this.context = context;
         this.key = key;
@@ -20,6 +22,21 @@ const BAR_WIDTH = 48;
         var value = Phaser.Math.clamp(rawValue.value, 0, rawValue.max);
         this.graphics.drawRect(21, this.y, value / rawValue.max * BAR_WIDTH, 3);
     };
+
+    Bar.prototype.flash = function () {
+        // Flash the bar quickly to call attention to it.
+        var colorBlend = {step: 0};
+        var duration = 1000;
+        var endColor = 0xffffff;
+        var timesToFlash = 2;
+        this.game.add.tween(colorBlend).to({step: 100}, duration, function (v) {
+            return (Math.sin((timesToFlash * 2 * v - 0.5) * Math.PI) + 1 ) / 2;
+        }, false)
+        .onUpdateCallback(() => {
+            this.color = Phaser.Color.interpolateColor(this.mainColor, endColor, 100, colorBlend.step, 1);
+        })
+        .start()
+    }
 
     const Panel = function (game, x, y, playerId) {
         Phaser.Group.call(this, game);
@@ -49,9 +66,9 @@ const BAR_WIDTH = 48;
         this.enemy = this.add(new myGame.Enemy(game));
 
         this.bars = [
-            new Bar(this, this.adventurer, 'health', 0xCC0000, 4),
-            new Bar(this, this.adventurer, 'magic', 0x0066CC, 9),
-            new Bar(this, this.adventurer, 'active', 0x009900, 14),
+            new Bar(game, this, this.adventurer, 'health', 0xCC0000, 4),
+            new Bar(game, this, this.adventurer, 'magic', 0x0066CC, 9),
+            new Bar(game, this, this.adventurer, 'active', 0x009900, 14),
         ];
 
         this.area.inputEnabled = true;
