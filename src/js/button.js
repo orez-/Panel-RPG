@@ -9,6 +9,7 @@ const NUM_ICONS = 5;
         this.key = key;
         this.frameColumn = buttonId;
         this.frame = this.frameColumn;
+        this.disabled = false;
         this.inputEnabled = true;
         this.events.onInputDown.add(this.down, this);
         this.events.onInputUp.add(this.up, this);
@@ -17,11 +18,15 @@ const NUM_ICONS = 5;
     Button.prototype.constructor = Button;
 
     Button.prototype.up = function () {
-        this.parent.setSelected(this);
+        if (!this.disabled) {
+            this.parent.setSelected(this);
+        }
     };
 
     Button.prototype.down = function () {
-        this.frame = this.frameColumn + NUM_ICONS;
+        if (!this.disabled) {
+            this.frame = this.frameColumn + NUM_ICONS;
+        }
     };
 
     Button.prototype.select = function () {
@@ -30,6 +35,16 @@ const NUM_ICONS = 5;
 
     Button.prototype.deselect = function () {
         this.frame = this.frameColumn;
+    };
+
+    Button.prototype.enable = function() {
+        this.disabled = false;
+        this.frame = this.frameColumn;
+    };
+
+    Button.prototype.disable = function() {
+        this.disabled = true;
+        this.frame = this.frameColumn + NUM_ICONS * 3;
     };
 
     // --
@@ -50,6 +65,14 @@ const NUM_ICONS = 5;
     ButtonGroup.prototype = Object.create(Phaser.Group.prototype);
     ButtonGroup.prototype.constructor = ButtonGroup;
 
+    ButtonGroup.prototype.getButton = function(button) {
+        var buttonLookup = this.buttons[button];
+        if (!buttonLookup) {
+            return button;
+        }
+        return buttonLookup;
+    };
+
     ButtonGroup.prototype.setSelected = function (button) {
         // Can either pass a button object or the name of a button
         var lastSelection = null;
@@ -57,15 +80,22 @@ const NUM_ICONS = 5;
             lastSelection = this.selected.key;
             this.selected.deselect();
         }
-        var buttonLookup = this.buttons[button];
-        if (!buttonLookup) {
-            this.selected = button;
-        }
-        else {
-            this.selected = buttonLookup;
-        }
+        this.selected = this.getButton(button);
         this.selected.select();
         return lastSelection;
+    };
+
+    ButtonGroup.prototype.setEnableStatus = function(button, enabled) {
+        button = this.getButton(button);
+        if (enabled) {
+            button.enable();
+        }
+        else {
+            button.disable();
+            if (this.selected && this.selected.key === button.key) {
+                this.selected = null;
+            }
+        }
     };
 
     myGame.Button = Button;

@@ -1,14 +1,15 @@
 window.myGame = window.myGame || {};
 
 (function(Phaser, myGame) {
+    const DAMAGE_SPELL_COST = 20;
+    const HEAL_SPELL_COST = 20;
+
     const Panel = function (game, x, y, playerId) {
         Phaser.Group.call(this, game);
         this.x = x;
         this.y = y;
         this.playerId = playerId;
         this.worldCharacter = null;  // set in world-map.js
-
-        this.state = myGame.GameState.WALKING;
 
         // XXX: this blocks button clicks so it needs to be below them,
         // but that also means the buttons swallow these events
@@ -41,9 +42,17 @@ window.myGame = window.myGame || {};
         this.area.inputEnabled = true;
         this.area.events.onInputOver.add(this.over, this);
         this.area.events.onInputOut.add(this.out, this);
+
+        this.setState(myGame.GameState.WALKING);
     };
     Panel.prototype = Object.create(Phaser.Group.prototype);
     Panel.prototype.constructor = Panel;
+
+    Panel.prototype.castSpell = function(magicCost) {
+        this.adventurer.magic.value -= magicCost;
+        this.buttonGroup.setEnableStatus('damageMagic', this.adventurer.magic.value >= DAMAGE_SPELL_COST);
+        this.buttonGroup.setEnableStatus('healMagic', this.adventurer.magic.value >= HEAL_SPELL_COST);
+    };
 
     Panel.prototype.performAction = function () {
         var action = this.buttonGroup.setSelected('attack');
@@ -56,7 +65,7 @@ window.myGame = window.myGame || {};
             });
         }
         else if (action === 'damageMagic') {
-            this.adventurer.magic.value -= 20;
+            this.castSpell(DAMAGE_SPELL_COST);
             this.adventurer.damageMagicAnimation(() => {
                 var remainingHealth = this.enemy.magicDamage(30);
                 if (!remainingHealth) {
@@ -65,7 +74,7 @@ window.myGame = window.myGame || {};
             });
         }
         else if (action === 'healMagic') {
-            this.adventurer.magic.value -= 20;
+            this.castSpell(HEAL_SPELL_COST);
             this.adventurer.healAnimation(() => {
                 this.adventurer.heal(50);
             });
@@ -99,6 +108,9 @@ window.myGame = window.myGame || {};
             this.background.beginScroll();
             this.adventurer.resetBattleReady();
             this.adventurer.walk();
+
+            this.buttonGroup.setEnableStatus('attack', false);
+            this.buttonGroup.setEnableStatus('damageMagic', false);
         }
         else if (this.state === myGame.GameState.BATTLE) {
             // TODO: this should probably be set before calling setState
@@ -109,6 +121,10 @@ window.myGame = window.myGame || {};
                 this.adventurer.beginBattleReady();
                 this.enemy.beginBattleReady();
             });
+
+            this.buttonGroup.setEnableStatus('attack', true);
+            this.buttonGroup.setEnableStatus('damageMagic', this.adventurer.magic.value >= DAMAGE_SPELL_COST);
+            this.buttonGroup.setSelected('attack');
         }
         else if (this.state === myGame.GameState.VICTORY) {
             this.adventurer.resetBattleReady();

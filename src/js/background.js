@@ -7,8 +7,6 @@ window.myGame = window.myGame || {};
         this.y = 21;
         this.leftPanel = this.add(new BackgroundSegment(game, 0));
         this.rightPanel = this.add(new BackgroundSegment(game, 1));
-
-        this.beginScroll();
     };
     Background.prototype = Object.create(Phaser.Group.prototype);
     Background.prototype.constructor = Background;

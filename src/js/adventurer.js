@@ -24,7 +24,6 @@ window.myGame = window.myGame || {};
         this.sprite.animations.add('die', animationColumn(4, 0, 2, FRAMES_WIDTH));
         this.sprite.animations.add('die2', animationColumn(4, 2, 4, FRAMES_WIDTH));  // variable fps
         this.sprite.animations.add('celebrate', animationColumn(6, 0, 5, FRAMES_WIDTH));
-        this.walk();
 
         this.health = {value: 66, max: 100};
         this.magic = {value: 33, max: 100};
