@@ -2,7 +2,7 @@ window.myGame = window.myGame || {};
 
 
 (function(Phaser, myGame) {
-    const FRAMES_WIDTH = 6;
+    const FRAMES_WIDTH = 7;
 
     function animationColumn(column, y0, y1, framesWidth) {
         var frames = [];
@@ -23,7 +23,8 @@ window.myGame = window.myGame || {};
         this.sprite.animations.add('cast', animationColumn(5, 0, 2, FRAMES_WIDTH));
         this.sprite.animations.add('die', animationColumn(4, 0, 2, FRAMES_WIDTH));
         this.sprite.animations.add('die2', animationColumn(4, 2, 4, FRAMES_WIDTH));  // variable fps
-        this.sprite.animations.play('walk', 10, true);
+        this.sprite.animations.add('celebrate', animationColumn(6, 0, 5, FRAMES_WIDTH));
+        this.walk();
 
         this.health = {value: 66, max: 100};
         this.magic = {value: 33, max: 100};
@@ -49,6 +50,10 @@ window.myGame = window.myGame || {};
         return emitter
     }
 
+    Adventurer.prototype.walk = function() {
+        this.sprite.animations.play('walk', 10, true);
+    };
+
     Adventurer.prototype.beginBattleAnimation = function () {
         this.sprite.animations.play('battleReady', 10).onComplete.add(function () {
             this.sprite.animations.play('battleIdle', 1, true);
@@ -60,6 +65,7 @@ window.myGame = window.myGame || {};
 
     Adventurer.prototype.resetBattleReady = function (argument) {
         this.game.time.events.remove(this.activeTimer);
+        this.active.value = 0;
     }
 
     Adventurer.prototype.advanceActiveBar = function () {
@@ -78,6 +84,14 @@ window.myGame = window.myGame || {};
         this.deathAnimation();
     }
 
+    Adventurer.prototype.resumeBattleIdle = function () {
+        // This conditional feels wrong. We need to make sure
+        // we don't clobber the celebrate animation.
+        if (this.parent.state === myGame.GameState.BATTLE) {
+            this.sprite.animations.play('battleIdle', 1, true);
+        }
+    }
+
     Adventurer.prototype.deathAnimation = function () {
         this.sprite.animations.play('die', 10).onComplete.add(function () {
             this.sprite.animations.play('die2', 2);
@@ -89,7 +103,7 @@ window.myGame = window.myGame || {};
         var moveX = this.game.add.tween(this);
         moveX.onComplete.add(function () {
             cb();
-            this.sprite.animations.play('battleIdle', 1, true);
+            this.resumeBattleIdle();
             var moveBack = this.game.add.tween(this);
             moveBack.to({x: this.idleX}, 100).start();
         }, this);
@@ -124,7 +138,7 @@ window.myGame = window.myGame || {};
                     // Heal the portal
                     sprite.play('close', 20).onComplete.add(function () {
                         sprite.destroy()
-                        this.sprite.animations.play('battleIdle', 1, true);
+                        this.resumeBattleIdle();
                     }, this);
                 }, this);
             }, this);
@@ -141,9 +155,16 @@ window.myGame = window.myGame || {};
                 if (cb) {
                     cb();
                 }
-                this.sprite.animations.play('battleIdle', 1, true);
+                this.resumeBattleIdle();
             }, this);
         }, this);
+    }
+
+    Adventurer.prototype.celebrate = function (cb) {
+        var anim = this.sprite.animations.play('celebrate', 10);
+        if (cb) {
+            anim.onComplete.addOnce(cb, this);
+        }
     }
 
     myGame.Adventurer = Adventurer;

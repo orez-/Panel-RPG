@@ -1,9 +1,5 @@
 window.myGame = window.myGame || {};
 
-const State = {
-    WALKING: 1,
-    BATTLE: 2,
-};
 (function(Phaser, myGame) {
     const Panel = function (game, x, y, playerId) {
         Phaser.Group.call(this, game);
@@ -12,7 +8,7 @@ const State = {
         this.playerId = playerId;
         this.worldCharacter = null;  // set in world-map.js
 
-        this.state = State.WALKING;
+        this.state = myGame.GameState.WALKING;
 
         // XXX: this blocks button clicks so it needs to be below them,
         // but that also means the buttons swallow these events
@@ -53,19 +49,25 @@ const State = {
         var action = this.buttonGroup.setSelected('attack');
         if (action === 'attack') {
             this.adventurer.attackAnimation(() => {
-                this.enemy.physicalDamage(this.adventurer.attack);
+                var remainingHealth = this.enemy.physicalDamage(this.adventurer.attack);
+                if (!remainingHealth) {
+                    this.setState('VICTORY');
+                }
             });
         }
         else if (action === 'damageMagic') {
             this.adventurer.magic.value -= 20;
             this.adventurer.damageMagicAnimation(() => {
-                this.enemy.magicDamage(30);
+                var remainingHealth = this.enemy.magicDamage(30);
+                if (!remainingHealth) {
+                    this.setState('VICTORY');
+                }
             });
         }
         else if (action === 'healMagic') {
             this.adventurer.magic.value -= 20;
             this.adventurer.healAnimation(() => {
-                this.adventurer.health.value = Math.min(this.adventurer.health.max, this.adventurer.health.value + 50);
+                this.adventurer.heal(50);
             });
         }
     }
@@ -85,21 +87,28 @@ const State = {
     }
 
     Panel.prototype.setState = function (state) {
-        var stateLookup = State[state];
+        var stateLookup = myGame.GameState[state];
         if (stateLookup) {
             state = stateLookup;
         }
         this.state = state;
-        if (this.state === State.WALKING) {
+        if (this.state === myGame.GameState.WALKING) {
             this.background.beginScroll();
             this.adventurer.resetBattleReady();
+            this.adventurer.walk();
         }
-        else if (this.state === State.BATTLE) {
+        else if (this.state === myGame.GameState.BATTLE) {
             this.adventurer.beginBattleAnimation();
             this.background.pauseScroll();
             this.enemy.enterAnimation(() => {
                 this.adventurer.beginBattleReady();
                 this.enemy.beginBattleReady();
+            });
+        }
+        else if (this.state === myGame.GameState.VICTORY) {
+            this.adventurer.resetBattleReady();
+            this.adventurer.celebrate(() => {
+                this.setState('WALKING');
             });
         }
     }
@@ -113,4 +122,9 @@ const State = {
         });
     };
     myGame.Panel = Panel;
+    myGame.GameState = {
+        WALKING: 1,
+        BATTLE: 2,
+        VICTORY: 3,
+    };
 })(window.Phaser, window.myGame);

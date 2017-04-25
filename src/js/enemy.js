@@ -64,13 +64,20 @@ const IDLE_X = 70;
     Enemy.prototype.die = function () {
         this.game.time.events.remove(this.activeTimer);
         this.active.value = 0;
-        this.sprite.animations.play('die', 5);
+        this.healthBar = null;
+        this.sprite.animations.play('die', 5).onComplete.addOnce(function () {
+            this.game.add.tween(this.sprite).to({alpha: 0}, 500, "Linear", true).onComplete.add(
+                function () {
+                    this.destroy();
+                }, this
+            );
+        }, this);
     }
 
     // Again, no render fn?
     Enemy.prototype.update = function () {
+        this.graphics.clear();
         if (this.healthBar) {
-            this.graphics.clear();
             this.healthBar.render();
         }
     }

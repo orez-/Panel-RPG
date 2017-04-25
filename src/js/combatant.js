@@ -16,11 +16,11 @@ window.myGame = window.myGame || {};
     Combatant.prototype = Object.create(Phaser.Group.prototype);
     Combatant.prototype.constructor = Combatant;
     Combatant.prototype.physicalDamage = function (amount) {
-        this.damage(amount - this.defense);
+        return this.damage(amount - this.defense);
     };
 
     Combatant.prototype.magicDamage = function (amount) {
-        this.damage(amount)
+        return this.damage(amount);
     };
 
     Combatant.prototype.damage = function (amount) {
@@ -30,7 +30,12 @@ window.myGame = window.myGame || {};
             this.active.value = 0;
             this.die();
         }
+        return this.health.value;
     };
+
+    Combatant.prototype.heal = function (amount) {
+        this.health.value = Math.min(this.health.max, this.health.value + amount);
+    }
 
     Combatant.prototype.die = function () {}
 
