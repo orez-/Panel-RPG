@@ -12,12 +12,25 @@ window.myGame = window.myGame || {};
         this.width = width;
         this.context = context;
         this.key = key;
+
+        this.lastValue = 0;
+        this.displayValue = 0;
     };
 
     Bar.prototype.render = function () {
         var rawValue = this.context[this.key];
         var value = Phaser.Math.clamp(rawValue.value, 0, rawValue.max);
-        var width = value / rawValue.max * this.width;
+        if (value != this.lastValue) {
+            if (rawValue.skipAnimation) {
+                this.displayValue = value;
+            }
+            else {
+                var moveDisplay = this.game.add.tween(this);
+                moveDisplay.to({displayValue: value}, 500).start();
+            }
+            this.lastValue = value;
+        }
+        var width = this.displayValue / rawValue.max * this.width;
         this.graphics.beginFill(this.color);
         this.graphics.drawRect(this.x, this.y, width, 3);
         this.graphics.beginFill(this.barColor);

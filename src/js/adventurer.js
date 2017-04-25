@@ -28,7 +28,7 @@ window.myGame = window.myGame || {};
 
         this.health = {value: 66, max: 100};
         this.magic = {value: 33, max: 100};
-        this.active = {value: 50, max: 100};
+        this.active = {value: 50, max: 100, skipAnimation: true};
 
         this.attack = 10;
         this.defense = 1;
