@@ -118,6 +118,7 @@ window.myGame = window.myGame || {};
         }
         this.state = state;
         if (this.state === myGame.GameState.WALKING) {
+            this.buttonGroup.deselect();
             this.background.beginScroll();
             this.adventurer.resetBattleReady();
             this.adventurer.walk();
