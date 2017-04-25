@@ -107,9 +107,9 @@ window.myGame = window.myGame || {};
         }
         else if (this.state === myGame.GameState.VICTORY) {
             this.adventurer.resetBattleReady();
-            this.adventurer.celebrate(() => {
+            this.adventurer.victory = () => {
                 this.setState('WALKING');
-            });
+            };
         }
     }
 

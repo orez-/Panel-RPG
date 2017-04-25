@@ -33,6 +33,8 @@ window.myGame = window.myGame || {};
         this.attack = 10;
         this.defense = 1;
 
+        this.victory = false;
+
         this.healEmitter = this.setupHealEmitter();
     };
     Adventurer.prototype = Object.create(myGame.Combatant.prototype);
@@ -85,9 +87,11 @@ window.myGame = window.myGame || {};
     }
 
     Adventurer.prototype.resumeBattleIdle = function () {
-        // This conditional feels wrong. We need to make sure
-        // we don't clobber the celebrate animation.
-        if (this.parent.state === myGame.GameState.BATTLE) {
+        if (this.victory) {
+            this.sprite.animations.play('celebrate', 10).onComplete.addOnce(this.victory);
+            this.victory = false;
+        }
+        else {
             this.sprite.animations.play('battleIdle', 1, true);
         }
     }
@@ -103,8 +107,9 @@ window.myGame = window.myGame || {};
         var moveX = this.game.add.tween(this);
         moveX.onComplete.add(function () {
             cb();
-            this.resumeBattleIdle();
+            // TODO: need a move-back animation
             var moveBack = this.game.add.tween(this);
+            moveBack.onComplete.addOnce(this.resumeBattleIdle, this);
             moveBack.to({x: this.idleX}, 100).start();
         }, this);
         moveX.to({x: 65}, 100).start();
@@ -158,13 +163,6 @@ window.myGame = window.myGame || {};
                 this.resumeBattleIdle();
             }, this);
         }, this);
-    }
-
-    Adventurer.prototype.celebrate = function (cb) {
-        var anim = this.sprite.animations.play('celebrate', 10);
-        if (cb) {
-            anim.onComplete.addOnce(cb, this);
-        }
     }
 
     myGame.Adventurer = Adventurer;
