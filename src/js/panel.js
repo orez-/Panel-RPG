@@ -26,7 +26,7 @@ window.myGame = window.myGame || {};
         this.background = this.add(new myGame.Background(game));
         this.adventurer = this.add(new myGame.Adventurer(game, 16, 95));
 
-        this.enemy = this.add(new myGame.Enemy(game));
+        this.enemy = null;
 
         this.graphics = game.add.graphics(0, 0, this);
         this.bars = [
@@ -98,6 +98,8 @@ window.myGame = window.myGame || {};
             this.adventurer.walk();
         }
         else if (this.state === myGame.GameState.BATTLE) {
+            // TODO: this should probably be set before calling setState
+            this.enemy = this.add(new myGame.Enemy(this.game));
             this.adventurer.beginBattleAnimation();
             this.background.pauseScroll();
             this.enemy.enterAnimation(() => {
@@ -116,7 +118,9 @@ window.myGame = window.myGame || {};
     // no render fn?
     Panel.prototype.update = function () {
         this.graphics.clear();
-        this.enemy.update();
+        if (this.enemy) {
+            this.enemy.update();
+        }
         this.bars.forEach(function (bar) {
             bar.render();
         });
