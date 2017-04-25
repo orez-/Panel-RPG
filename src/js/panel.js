@@ -59,6 +59,7 @@ const State = {
         else if (action === 'damageMagic') {
             this.adventurer.magic.value -= 20;
             this.adventurer.damageMagicAnimation(() => {
+                this.enemy.magicDamage(30);
             });
         }
         else if (action === 'healMagic') {

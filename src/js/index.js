@@ -10,6 +10,7 @@ window.myGame = window.myGame || {};
         game.load.image('panelHud', 'assets/sprites/panel_hud.png');
         game.load.spritesheet('healMagic', 'assets/sprites/healMagic.png', 9, 9);
         game.load.spritesheet('damageMagic', 'assets/sprites/damageMagic.png', 32, 32);
+        game.load.spritesheet('fireball', 'assets/sprites/fireball.png', 32, 32);
         game.load.spritesheet('knife_goblin', 'assets/sprites/knife_goblin.png', 32, 32);
         game.load.spritesheet('city', 'assets/sprites/city.png', 17, 17);
         game.load.spritesheet('charIcon', 'assets/sprites/charIcon.png', 15, 15);

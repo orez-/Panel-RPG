@@ -16,7 +16,15 @@ window.myGame = window.myGame || {};
     Combatant.prototype = Object.create(Phaser.Group.prototype);
     Combatant.prototype.constructor = Combatant;
     Combatant.prototype.physicalDamage = function (amount) {
-        this.health.value -= amount - this.defense;
+        this.damage(amount - this.defense);
+    };
+
+    Combatant.prototype.magicDamage = function (amount) {
+        this.damage(amount)
+    };
+
+    Combatant.prototype.damage = function (amount) {
+        this.health.value -= amount;
         if (this.health.value <= 0) {
             this.health.value = 0;
             this.active.value = 0;

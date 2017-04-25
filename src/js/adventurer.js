@@ -99,16 +99,30 @@ window.myGame = window.myGame || {};
     Adventurer.prototype.damageMagicAnimation = function (cb) {
         const WIDTH = 3;
         this.sprite.animations.play('cast', 10).onComplete.addOnce(function () {
-            var sprite = this.add(this.game.add.sprite(32, 0, 'damageMagic'));
+            var sprite = this.add(this.game.add.sprite(16, 0, 'damageMagic'));
             sprite.animations.add('circle', animationColumn(0, 0, 6, WIDTH));
             sprite.animations.add('open', animationColumn(1, 0, 3, WIDTH));
             sprite.animations.add('close', animationColumn(2, 0, 3, WIDTH));
+            // Draw the circle
             sprite.play('circle', 20).onComplete.add(function () {
+                // Open the portal
                 sprite.play('open', 30).onComplete.add(function () {
-                    sprite.play('close', 20).onComplete.add(function () {
+                    // Shoot a fireball
+                    var fireball = this.add(this.game.add.sprite(16, 0, 'fireball'));
+                    fireball.animations.add('fire', [0, 1]);
+                    fireball.play('fire', 20, true);
+
+                    var moveX = this.game.add.tween(fireball);
+                    moveX.onComplete.add(function () {
+                        this.destroy();
                         if (cb) {
                             cb();
                         }
+                    }, fireball);
+                    moveX.to({x: 65}, 100).start();
+
+                    // Heal the portal
+                    sprite.play('close', 20).onComplete.add(function () {
                         sprite.destroy()
                         this.sprite.animations.play('battleIdle', 1, true);
                     }, this);
