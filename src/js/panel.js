@@ -74,7 +74,10 @@ window.myGame = window.myGame || {};
 
     Panel.prototype.enemyAttack = function () {
         this.enemy.attackAnimation(() => {
-            this.adventurer.physicalDamage(this.enemy.attack);
+            var remainingHealth = this.adventurer.physicalDamage(this.enemy.attack);
+            if (!remainingHealth) {
+                this.setState('DEFEAT');
+            }
         });
     }
 
@@ -113,6 +116,9 @@ window.myGame = window.myGame || {};
                 this.setState('WALKING');
             };
         }
+        else if (this.state === myGame.GameState.DEFEAT) {
+            this.enemy.resetBattleReady();
+        }
     }
 
     // no render fn?
@@ -130,5 +136,6 @@ window.myGame = window.myGame || {};
         WALKING: 1,
         BATTLE: 2,
         VICTORY: 3,
+        DEFEAT: 4,
     };
 })(window.Phaser, window.myGame);

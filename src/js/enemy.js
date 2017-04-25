@@ -61,6 +61,11 @@ const IDLE_X = 70;
         }
     };
 
+    Enemy.prototype.resetBattleReady = function (argument) {
+        this.game.time.events.remove(this.activeTimer);
+        this.active.value = 0;
+    }
+
     Enemy.prototype.die = function () {
         this.game.time.events.remove(this.activeTimer);
         this.active.value = 0;
