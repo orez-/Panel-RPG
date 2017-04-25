@@ -98,32 +98,30 @@ window.myGame = window.myGame || {};
 
     Adventurer.prototype.damageMagicAnimation = function (cb) {
         const WIDTH = 3;
-        this.sprite.animations.play('cast', 10).onComplete.add(() => {
+        this.sprite.animations.play('cast', 10).onComplete.addOnce(function () {
             var sprite = this.add(this.game.add.sprite(32, 0, 'damageMagic'));
             sprite.animations.add('circle', animationColumn(0, 0, 6, WIDTH));
             sprite.animations.add('open', animationColumn(1, 0, 3, WIDTH));
             sprite.animations.add('close', animationColumn(2, 0, 3, WIDTH));
-            sprite.play('circle', 20).onComplete.add(
-                () => sprite.play('open', 30).onComplete.add(
-                    () => sprite.play('close', 20).onComplete.add(
-                        () => {
-                            if (cb) {
-                                cb();
-                            }
-                            sprite.destroy()
-                            this.sprite.animations.play('battleIdle', 1, true);
+            sprite.play('circle', 20).onComplete.add(function () {
+                sprite.play('open', 30).onComplete.add(function () {
+                    sprite.play('close', 20).onComplete.add(function () {
+                        if (cb) {
+                            cb();
                         }
-                    )
-                )
-            )
-        });
+                        sprite.destroy()
+                        this.sprite.animations.play('battleIdle', 1, true);
+                    }, this);
+                }, this);
+            }, this);
+        }, this);
     }
 
     Adventurer.prototype.healAnimation = function (cb) {
-        this.sprite.animations.play('cast', 10).onComplete.add(function () {
+        this.sprite.animations.play('cast', 10).onComplete.addOnce(function () {
             //  This will emit a quantity of 2 particles every 200ms, 10 times.
             // Each particle will live for 600ms.
-            var timeToLive = 1800;
+            var timeToLive = 1500;
             this.healEmitter.flow(600, 200, 2, 10);
             this.game.time.events.add(timeToLive, function () {
                 if (cb) {
