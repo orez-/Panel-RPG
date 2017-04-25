@@ -2,7 +2,7 @@ window.myGame = window.myGame || {};
 
 
 (function(Phaser, myGame) {
-    const FRAMES_WIDTH = 5;
+    const FRAMES_WIDTH = 6;
 
     function animationColumn(column, y0, y1) {
         var frames = [];
@@ -20,6 +20,7 @@ window.myGame = window.myGame || {};
         this.sprite.animations.add('battleReady', animationColumn(2, 0, 2));
         this.sprite.animations.add('battleIdle', animationColumn(2, 2, 3));
         this.sprite.animations.add('attack', animationColumn(3, 0, 0));
+        this.sprite.animations.add('cast', animationColumn(5, 0, 2));
         this.sprite.animations.add('die', animationColumn(4, 0, 2));
         this.sprite.animations.add('die2', animationColumn(4, 2, 4));  // variable fps
         this.sprite.animations.play('walk', 10, true);
@@ -30,9 +31,26 @@ window.myGame = window.myGame || {};
 
         this.attack = 10;
         this.defense = 1;
+
+        this.healEmitter = this.setupHealEmitter();
+
+        // emitter.gravity = 250;
+
     };
     Adventurer.prototype = Object.create(myGame.Combatant.prototype);
     Adventurer.prototype.constructor = Adventurer;
+
+    Adventurer.prototype.setupHealEmitter = function () {
+        var emitter = this.add(this.game.add.emitter(10, 0, 100));
+
+        emitter.makeParticles('healMagic');
+
+        emitter.minParticleSpeed.setTo(-20, 10);
+        emitter.maxParticleSpeed.setTo(20, 10);
+        emitter.minParticleScale = 1;
+        emitter.maxParticleScale = 1;
+        return emitter
+    }
 
     Adventurer.prototype.beginBattleAnimation = function () {
         this.sprite.animations.play('battleReady', 10).onComplete.add(function () {
@@ -79,6 +97,21 @@ window.myGame = window.myGame || {};
             moveBack.to({x: this.idleX}, 100).start();
         }, this);
         moveX.to({x: 65}, 100).start();
+    }
+
+    Adventurer.prototype.healAnimation = function (cb) {
+        this.sprite.animations.play('cast', 10).onComplete.add(function () {
+            //  This will emit a quantity of 2 particles every 200ms, 10 times.
+            // Each particle will live for 600ms.
+            var timeToLive = 1800;
+            this.healEmitter.flow(600, 200, 2, 10);
+            this.game.time.events.add(timeToLive, function () {
+                if (cb) {
+                    cb();
+                }
+                this.sprite.animations.play('battleIdle', 1, true);
+            }, this);
+        }, this);
     }
 
     myGame.Adventurer = Adventurer;
