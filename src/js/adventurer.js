@@ -2,7 +2,7 @@ window.myGame = window.myGame || {};
 
 
 (function(Phaser, myGame) {
-    const FRAMES_WIDTH = 7;
+    const FRAMES_WIDTH = 8;
 
     function animationColumn(column, y0, y1, framesWidth) {
         var frames = [];
@@ -24,6 +24,7 @@ window.myGame = window.myGame || {};
         this.sprite.animations.add('die', animationColumn(4, 0, 2, FRAMES_WIDTH));
         this.sprite.animations.add('die2', animationColumn(4, 2, 4, FRAMES_WIDTH));  // variable fps
         this.sprite.animations.add('celebrate', animationColumn(6, 0, 5, FRAMES_WIDTH));
+        this.sprite.animations.add('quaff', animationColumn(7, 0, 0, FRAMES_WIDTH));
 
         this.health = {value: 66, max: 100};
         this.magic = {value: 33, max: 100};
@@ -31,8 +32,6 @@ window.myGame = window.myGame || {};
 
         this.attack = 10;
         this.defense = 1;
-
-        this.victory = false;
 
         this.healEmitter = this.setupHealEmitter();
     };
@@ -86,9 +85,13 @@ window.myGame = window.myGame || {};
     }
 
     Adventurer.prototype.resumeBattleIdle = function () {
-        if (this.victory) {
-            this.sprite.animations.play('celebrate', 10).onComplete.addOnce(this.victory);
-            this.victory = false;
+        if (this.parent.state === myGame.GameState.VICTORY) {
+            this.sprite.animations.play('celebrate', 10).onComplete.addOnce(function () {
+                this.parent.setState('WALKING');
+            }, this);
+        }
+        else if (this.parent.state === myGame.GameState.RESPITE) {
+            this.parent.setState('WALKING');
         }
         else {
             this.sprite.animations.play('battleIdle', 1, true);
@@ -161,6 +164,15 @@ window.myGame = window.myGame || {};
                 }
                 this.resumeBattleIdle();
             }, this);
+        }, this);
+    }
+
+    Adventurer.prototype.quaffAnimation = function (cb) {
+        this.sprite.animations.play('quaff', 1).onComplete.addOnce(function () {
+            if (cb) {
+                cb();
+            }
+            this.resumeBattleIdle();
         }, this);
     }
 

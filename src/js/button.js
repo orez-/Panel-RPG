@@ -30,7 +30,11 @@ const NUM_ICONS = 5;
     };
 
     Button.prototype.select = function () {
-        this.frame = this.frameColumn + NUM_ICONS * 2;
+        if (!this.disabled) {
+            this.frame = this.frameColumn + NUM_ICONS * 2;
+            return true;
+        }
+        return false;
     }
 
     Button.prototype.deselect = function () {
@@ -73,15 +77,31 @@ const NUM_ICONS = 5;
         return buttonLookup;
     };
 
-    ButtonGroup.prototype.setSelected = function (button) {
-        // Can either pass a button object or the name of a button
+    ButtonGroup.prototype.deselect = function() {
         var lastSelection = null;
         if (this.selected) {
             lastSelection = this.selected.key;
             this.selected.deselect();
+            this.selected = null;
         }
-        this.selected = this.getButton(button);
-        this.selected.select();
+        return lastSelection;
+    };
+
+    ButtonGroup.prototype.setSelected = function (button) {
+        // Can either pass a button object or the name of a button
+        var newSelected = this.getButton(button);
+        var success = newSelected.select();
+        if (!success) {
+            return false;
+        }
+        if (this.selected && this.selected.key === newSelected.key) {
+            return newSelected.key;
+        }
+        var lastSelection = this.deselect();
+        this.selected = newSelected;
+        if (this.parent.onButtonChange) {
+            this.parent.onButtonChange(this.selected.key);
+        }
         return lastSelection;
     };
 

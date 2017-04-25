@@ -54,8 +54,16 @@ window.myGame = window.myGame || {};
         this.buttonGroup.setEnableStatus('healMagic', this.adventurer.magic.value >= HEAL_SPELL_COST);
     };
 
+    Panel.prototype.onButtonChange = function(buttonKey) {
+        if (this.state === myGame.GameState.WALKING && buttonKey) {
+            this.setState('RESPITE');
+            this.performAction();
+        }
+    };
+
     Panel.prototype.performAction = function () {
-        var action = this.buttonGroup.setSelected('attack');
+        var action = this.buttonGroup.deselect();
+        this.buttonGroup.setSelected('attack');
         if (action === 'attack') {
             this.adventurer.attackAnimation(() => {
                 var remainingHealth = this.enemy.physicalDamage(this.adventurer.attack);
@@ -76,6 +84,11 @@ window.myGame = window.myGame || {};
         else if (action === 'healMagic') {
             this.castSpell(HEAL_SPELL_COST);
             this.adventurer.healAnimation(() => {
+                this.adventurer.heal(50);
+            });
+        }
+        else if (action === 'potion') {
+            this.adventurer.quaffAnimation(() => {
                 this.adventurer.heal(50);
             });
         }
@@ -135,6 +148,9 @@ window.myGame = window.myGame || {};
         else if (this.state === myGame.GameState.DEFEAT) {
             this.enemy.resetBattleReady();
         }
+        else if (this.state === myGame.GameState.RESPITE) {
+            this.background.pauseScroll();
+        }
     }
 
     // no render fn?
@@ -153,5 +169,6 @@ window.myGame = window.myGame || {};
         BATTLE: 2,
         VICTORY: 3,
         DEFEAT: 4,
+        RESPITE: 5,
     };
 })(window.Phaser, window.myGame);
