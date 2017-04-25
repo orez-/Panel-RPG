@@ -56,7 +56,12 @@ const State = {
                 this.enemy.physicalDamage(this.adventurer.attack);
             });
         }
-        else if (action == 'healMagic') {
+        else if (action === 'damageMagic') {
+            this.adventurer.magic.value -= 20;
+            this.adventurer.damageMagicAnimation(() => {
+            });
+        }
+        else if (action === 'healMagic') {
             this.adventurer.magic.value -= 20;
             this.adventurer.healAnimation(() => {
                 this.adventurer.health.value = Math.min(this.adventurer.health.max, this.adventurer.health.value + 50);

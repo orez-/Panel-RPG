@@ -4,10 +4,10 @@ window.myGame = window.myGame || {};
 (function(Phaser, myGame) {
     const FRAMES_WIDTH = 6;
 
-    function animationColumn(column, y0, y1) {
+    function animationColumn(column, y0, y1, framesWidth) {
         var frames = [];
         for(var i=y0; i<=y1; i++) {
-            frames.push(column + i * FRAMES_WIDTH);
+            frames.push(column + i * framesWidth);
         }
         return frames;
     };
@@ -16,13 +16,13 @@ window.myGame = window.myGame || {};
         this.idleX = x;
         myGame.Combatant.call(this, game, x, y, 'player');
 
-        this.sprite.animations.add('walk', animationColumn(1, 0, 5));
-        this.sprite.animations.add('battleReady', animationColumn(2, 0, 2));
-        this.sprite.animations.add('battleIdle', animationColumn(2, 2, 3));
-        this.sprite.animations.add('attack', animationColumn(3, 0, 0));
-        this.sprite.animations.add('cast', animationColumn(5, 0, 2));
-        this.sprite.animations.add('die', animationColumn(4, 0, 2));
-        this.sprite.animations.add('die2', animationColumn(4, 2, 4));  // variable fps
+        this.sprite.animations.add('walk', animationColumn(1, 0, 5, FRAMES_WIDTH));
+        this.sprite.animations.add('battleReady', animationColumn(2, 0, 2, FRAMES_WIDTH));
+        this.sprite.animations.add('battleIdle', animationColumn(2, 2, 3, FRAMES_WIDTH));
+        this.sprite.animations.add('attack', animationColumn(3, 0, 0, FRAMES_WIDTH));
+        this.sprite.animations.add('cast', animationColumn(5, 0, 2, FRAMES_WIDTH));
+        this.sprite.animations.add('die', animationColumn(4, 0, 2, FRAMES_WIDTH));
+        this.sprite.animations.add('die2', animationColumn(4, 2, 4, FRAMES_WIDTH));  // variable fps
         this.sprite.animations.play('walk', 10, true);
 
         this.health = {value: 66, max: 100};
@@ -33,9 +33,6 @@ window.myGame = window.myGame || {};
         this.defense = 1;
 
         this.healEmitter = this.setupHealEmitter();
-
-        // emitter.gravity = 250;
-
     };
     Adventurer.prototype = Object.create(myGame.Combatant.prototype);
     Adventurer.prototype.constructor = Adventurer;
@@ -97,6 +94,29 @@ window.myGame = window.myGame || {};
             moveBack.to({x: this.idleX}, 100).start();
         }, this);
         moveX.to({x: 65}, 100).start();
+    }
+
+    Adventurer.prototype.damageMagicAnimation = function (cb) {
+        const WIDTH = 3;
+        this.sprite.animations.play('cast', 10).onComplete.add(() => {
+            var sprite = this.add(this.game.add.sprite(32, 0, 'damageMagic'));
+            sprite.animations.add('circle', animationColumn(0, 0, 6, WIDTH));
+            sprite.animations.add('open', animationColumn(1, 0, 3, WIDTH));
+            sprite.animations.add('close', animationColumn(2, 0, 3, WIDTH));
+            sprite.play('circle', 20).onComplete.add(
+                () => sprite.play('open', 30).onComplete.add(
+                    () => sprite.play('close', 20).onComplete.add(
+                        () => {
+                            if (cb) {
+                                cb();
+                            }
+                            sprite.destroy()
+                            this.sprite.animations.play('battleIdle', 1, true);
+                        }
+                    )
+                )
+            )
+        });
     }
 
     Adventurer.prototype.healAnimation = function (cb) {
