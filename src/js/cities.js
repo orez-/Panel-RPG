@@ -241,7 +241,7 @@ window.myGame = window.myGame || {};
 
         tweenData.totalDistance = totalDistance;
 
-        tweenData.easingFunction = function (v) {
+        var easingFunction = function (v) {
             var step = tweenData.fractionalDistances.length - 1;
             var index, value;
             // Find the piece of the piecewise function `v` falls in.
@@ -259,6 +259,24 @@ window.myGame = window.myGame || {};
             var jump = (index - 1) / step;
             return jump + ((v - lower) / (upper - lower)) / step;
         }
+
+        tweenData.getTween = function (sprite, speed) {
+            // v = d / t
+            // t = d / v
+            var time = totalDistance / speed * 1000;
+
+            // Phaser prepends the current location to the waypoint list,
+            // so we have to clone it.
+            // wtf phaser
+            var positions = {
+                x: tweenData.x.slice(),
+                y: tweenData.y.slice(),
+            };
+
+            return sprite.game.add.tween(sprite).to(positions, time, easingFunction, true)
+                .interpolation(Phaser.Math.catmullRomInterpolation)
+        }
+
         path.tweenData = tweenData;
     });
 

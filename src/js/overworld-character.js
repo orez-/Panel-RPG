@@ -33,17 +33,7 @@ const NUM_CHARS = 6;
         var path = possiblePaths[key];
         this.mapLocation = myGame.citiesData.citiesByName[path.arriving];
 
-        // Phaser prepends the current location to the waypoint list,
-        // so we have to clone it.
-        // wtf phaser
-        var tweenData = {
-            x: path.tweenData.x.slice(),
-            y: path.tweenData.y.slice(),
-        };
-
-        this.game.add.tween(this).to(tweenData, 1000, path.tweenData.easingFunction, true)
-            .interpolation(Phaser.Math.catmullRomInterpolation)
-            .onComplete.addOnce(this.embark, this);
+        path.tweenData.getTween(this, 50).onComplete.addOnce(this.embark, this);
     };
 
     myGame.OverworldCharacter = OverworldCharacter;
