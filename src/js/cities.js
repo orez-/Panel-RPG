@@ -150,54 +150,62 @@ window.myGame = window.myGame || {};
         myGame.citiesData.citiesByName[city.name] = city;
     });
 
+    function iteratePaths(cb) {
+        // Holy boilerplate batman
+        Object.keys(myGame.citiesData._paths).forEach(function (departing) {
+            var departingCity = myGame.citiesData.citiesByName[departing];
+            var paths = myGame.citiesData._paths[departing];
+            Object.keys(paths).forEach(function (arriving) {
+                var arrivingCity = myGame.citiesData.citiesByName[arriving];
+                var path = paths[arriving];
+
+                cb(path, departingCity, arrivingCity);
+            });
+        });
+    }
+
     // Fill out paths
-    Object.keys(myGame.citiesData._paths).forEach(function (departing) {
-        var departingCity = myGame.citiesData.citiesByName[departing];
-        var paths = myGame.citiesData._paths[departing];
-        Object.keys(paths).forEach(function (arriving) {
-            var arrivingCity = myGame.citiesData.citiesByName[arriving];
-            var path = paths[arriving];
-            if (!path) {  // we'll backfill you later
-                return;
-            }
-            path.waypoints = path.waypoints || [];
+    iteratePaths(function (path, departingCity, arrivingCity) {
+        if (!path) {  // we'll backfill you later
+            return;
+        }
+        path.waypoints = path.waypoints || [];
 
-            // Add start and end coordinates to waypoints
-            path.waypoints.unshift({x: departingCity.x, y: departingCity.y});
-            path.waypoints.push({x: arrivingCity.x, y: arrivingCity.y});
+        // Add start and end coordinates to waypoints
+        path.waypoints.unshift({x: departingCity.x, y: departingCity.y});
+        path.waypoints.push({x: arrivingCity.x, y: arrivingCity.y});
 
-            // Add arriving + departing attrs
-            path.departing = departing;
-            path.arriving = arriving;
+        // Add arriving + departing attrs
+        path.departing = departingCity.name;
+        path.arriving = arrivingCity.name;
 
-            // Calculate distance on paths for bfs
-        });
+        // Calculate distance on paths for bfs
     });
+
     // Backfill reverse paths
-    Object.keys(myGame.citiesData._paths).forEach(function (departing) {
-        var departingCity = myGame.citiesData.citiesByName[departing];
-        var paths = myGame.citiesData._paths[departing];
-        Object.keys(paths).forEach(function (arriving) {
-            var arrivingCity = myGame.citiesData.citiesByName[arriving];
-            var path = paths[arriving];
-            var reversePath = myGame.citiesData._paths[arriving][departing];
-            if (!path && !reversePath) {
-                throw Error("no definition for path or its reverse " + arriving + " " + departing);
-            }
-            if (!path) {
-                paths[arriving] = {
-                    waypoints: reversePath.waypoints.slice().reverse(),
-                    arriving: reversePath.departing,
-                    departing: reversePath.arriving,
-                };
-            }
-            else if (!reversePath) {
-                myGame.citiesData._paths[arriving][departing] = {
-                    waypoints: path.waypoints.slice().reverse(),
-                    arriving: path.departing,
-                    departing: path.arriving,
-                };
-            }
-        });
+    iteratePaths(function (path, departingCity, arrivingCity) {
+        var departing = departingCity.name;
+        var arriving = arrivingCity.name;
+        var reversePath = myGame.citiesData._paths[arriving][departing];
+        if (!path && !reversePath) {
+            console.warn("no definition for path or its reverse " + arriving + " ↔ " + departing);
+            delete myGame.citiesData._paths[departing][arriving];
+            delete myGame.citiesData._paths[arriving][departing];
+            return;
+        }
+        if (!path) {
+            myGame.citiesData._paths[departing][arriving] = {
+                waypoints: reversePath.waypoints.slice().reverse(),
+                arriving: reversePath.departing,
+                departing: reversePath.arriving,
+            };
+        }
+        else if (!reversePath) {
+            myGame.citiesData._paths[arriving][departing] = {
+                waypoints: path.waypoints.slice().reverse(),
+                arriving: path.departing,
+                departing: path.arriving,
+            };
+        }
     });
 })(window.Phaser, window.myGame);
