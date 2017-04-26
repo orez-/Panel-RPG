@@ -33,7 +33,7 @@ const NUM_CHARS = 6;
         var path = possiblePaths[key];
         this.mapLocation = myGame.citiesData.citiesByName[path.arriving];
 
-        path.tweenData.getTween(this, 50).onComplete.addOnce(this.embark, this);
+        path.getTween(this, 5).onComplete.addOnce(this.embark, this);
     };
 
     myGame.OverworldCharacter = OverworldCharacter;

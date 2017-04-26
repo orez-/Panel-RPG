@@ -209,43 +209,41 @@ window.myGame = window.myGame || {};
         }
     });
 
-    // Add tween helpers
+    // Add tween functions
     iteratePaths(function (path, departingCity, arrivingCity) {
-        var tweenData = {
-            x: [],
-            y: [],
-            distances: [],
-            fractionalDistances: [0],
-        };
+        // Enormously critical that everything is `var`'d-up here.
+        var xs = [];
+        var ys = [];
+        var distances = [];
+        var fractionalDistances = [0];
+        var totalDistance = 0;
 
         var lastX = null;
         var lastY = null;
-        var totalDistance = 0;
         path.waypoints.forEach(function (elem) {
             if (lastX !== null) {
-                tweenData.x.push(elem.x);
-                tweenData.y.push(elem.y);
+                xs.push(elem.x);
+                ys.push(elem.y);
                 var distance = Phaser.Math.distance(elem.x, elem.y, lastX, lastY);
-                tweenData.distances.push(distance);
+                distances.push(distance);
                 totalDistance += distance;
             }
             lastX = elem.x;
             lastY = elem.y;
         });
 
+        // Calculate fractional aggregates
         var total = 0;
-        tweenData.distances.forEach(function (d) {
+        distances.forEach(function (d) {
             total += d;
-            tweenData.fractionalDistances.push(total / totalDistance);
+            fractionalDistances.push(total / totalDistance);
         });
 
-        tweenData.totalDistance = totalDistance;
-
         var easingFunction = function (v) {
-            var step = tweenData.fractionalDistances.length - 1;
+            var step = fractionalDistances.length - 1;
             var index, value;
             // Find the piece of the piecewise function `v` falls in.
-            for ([index, value] of tweenData.fractionalDistances.entries()) {
+            for ([index, value] of fractionalDistances.entries()) {
                 // Between index-1 and index.
                 // interpolate those points.
                 if (value >= v) {
@@ -253,31 +251,29 @@ window.myGame = window.myGame || {};
                 }
             }
             index = Math.min(index, step);
-            var lower = tweenData.fractionalDistances[index - 1];
-            var upper = tweenData.fractionalDistances[index];
+            var lower = fractionalDistances[index - 1];
+            var upper = fractionalDistances[index];
 
             var jump = (index - 1) / step;
             return jump + ((v - lower) / (upper - lower)) / step;
         }
 
-        tweenData.getTween = function (sprite, speed) {
+        path.getTween = function (sprite, speed) {
             // v = d / t
             // t = d / v
-            var time = totalDistance / speed * 1000;
+            var time = totalDistance * 1000 / speed;
 
             // Phaser prepends the current location to the waypoint list,
             // so we have to clone it.
             // wtf phaser
             var positions = {
-                x: tweenData.x.slice(),
-                y: tweenData.y.slice(),
+                x: xs.slice(),
+                y: ys.slice(),
             };
 
             return sprite.game.add.tween(sprite).to(positions, time, easingFunction, true)
                 .interpolation(Phaser.Math.catmullRomInterpolation)
-        }
-
-        path.tweenData = tweenData;
+        };
     });
 
 })(window.Phaser, window.myGame);
