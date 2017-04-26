@@ -26,7 +26,7 @@ window.myGame = window.myGame || {};
         _paths: {  // {departing: {arriving: path}}
             One: {
                 Bar: {waypoints: []},
-                Foo: {waypoints: [{x: 0, y: 95}, 'dateline', {x: 400, y: 90}]},
+                // Foo: {waypoints: [{x: 0, y: 95}, 'dateline', {x: 400, y: 90}]},
                 Two: {waypoints: [{x: 46, y: 90}]},
                 Zambia: {},
             },
@@ -87,8 +87,8 @@ window.myGame = window.myGame || {};
                 Bazinga: null,
                 "Bob Saget": {waypoints: [{x: 108, y: 207}, {x: 132, y: 224}, {x: 180, y: 227}]},
                 Salamander: {waypoints: [{x: 88, y: 220}, {x: 92, y: 247}, {x: 105, y: 262}, {x: 131, y: 267}]},
-                Zaire: {waypoints: [{x: 0, y: 205}, 'dateline', {x: 400, y: 203}]},
-                Summarily: {waypoints: [{x: 0, y: 263}, 'dateline', {x: 400, y: 260}]},
+                // Zaire: {waypoints: [{x: 0, y: 205}, 'dateline', {x: 400, y: 203}]},
+                // Summarily: {waypoints: [{x: 0, y: 263}, 'dateline', {x: 400, y: 260}]},
             },
             Zaire: {
                 Bang: null,
@@ -109,7 +109,7 @@ window.myGame = window.myGame || {};
                 "Sim City": {waypoints: [{x: 226, y: 292}]},
             },
             Salamander: {
-                Summarily: {waypoints: [{x: 117, y: 311}, {x: 0, y: 312}, 'dateline', {x: 400, y: 312}]},
+                // Summarily: {waypoints: [{x: 117, y: 311}, {x: 0, y: 312}, 'dateline', {x: 400, y: 312}]},
                 Zambia: null,
                 "Bob Saget": null,
                 Soonish: {waypoints: [{x: 165, y: 279}, {x: 181, y: 293}, {x: 178, y: 320}]},
@@ -208,4 +208,58 @@ window.myGame = window.myGame || {};
             };
         }
     });
+
+    // Add tween helpers
+    iteratePaths(function (path, departingCity, arrivingCity) {
+        var tweenData = {
+            x: [],
+            y: [],
+            distances: [],
+            fractionalDistances: [0],
+        };
+
+        var lastX = null;
+        var lastY = null;
+        var totalDistance = 0;
+        path.waypoints.forEach(function (elem) {
+            if (lastX !== null) {
+                tweenData.x.push(elem.x);
+                tweenData.y.push(elem.y);
+                var distance = Phaser.Math.distance(elem.x, elem.y, lastX, lastY);
+                tweenData.distances.push(distance);
+                totalDistance += distance;
+            }
+            lastX = elem.x;
+            lastY = elem.y;
+        });
+
+        var total = 0;
+        tweenData.distances.forEach(function (d) {
+            total += d;
+            tweenData.fractionalDistances.push(total / totalDistance);
+        });
+
+        tweenData.totalDistance = totalDistance;
+
+        tweenData.easingFunction = function (v) {
+            var step = tweenData.fractionalDistances.length - 1;
+            var index, value;
+            // Find the piece of the piecewise function `v` falls in.
+            for ([index, value] of tweenData.fractionalDistances.entries()) {
+                // Between index-1 and index.
+                // interpolate those points.
+                if (value >= v) {
+                    break;
+                }
+            }
+            index = Math.min(index, step);
+            var lower = tweenData.fractionalDistances[index - 1];
+            var upper = tweenData.fractionalDistances[index];
+
+            var jump = (index - 1) / step;
+            return jump + ((v - lower) / (upper - lower)) / step;
+        }
+        path.tweenData = tweenData;
+    });
+
 })(window.Phaser, window.myGame);

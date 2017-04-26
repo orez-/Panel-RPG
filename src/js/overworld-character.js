@@ -7,15 +7,13 @@ const NUM_CHARS = 6;
 
     const OverworldCharacter = function (game, playerId, startingCity) {
         Phaser.Sprite.call(this, game, startingCity.x, startingCity.y, 'charIcon');
-        game.physics.arcade.enable(this);
         this.anchor.x = 0.5;
         this.anchor.y = 0.5;
         this.frame = playerId;
         this.playerId = playerId;
 
         this.mapLocation = startingCity;
-        this.currentGoal = null;
-        this.pathIndex = 0;
+        this.embark();
     };
     OverworldCharacter.prototype = Object.create(Phaser.Sprite.prototype);
     OverworldCharacter.prototype.constructor = OverworldCharacter;
@@ -28,46 +26,24 @@ const NUM_CHARS = 6;
         this.frame = this.playerId;
     };
 
-    OverworldCharacter.prototype.update = function () {
-        if (!this.currentGoal) {
-            var possiblePaths = myGame.citiesData.pathsFrom(this.mapLocation.name);
-            var key = Phaser.ArrayUtils.getRandomItem(Object.keys(possiblePaths));
-            if (!key) {return;}
-            // console.log(this.frame + " next stop: ", key);
-            this.mapLocation = possiblePaths[key];
-            this.pathIndex = 0;
-            this.currentGoal = this.mapLocation.waypoints[0];
-            this.game.physics.arcade.moveToXY(this, this.currentGoal.x, this.currentGoal.y, MOVE_SPEED);
-        }
+    OverworldCharacter.prototype.embark = function() {
+        var possiblePaths = myGame.citiesData.pathsFrom(this.mapLocation.name);
+        var key = Phaser.ArrayUtils.getRandomItem(Object.keys(possiblePaths));
+        if (!key) {return;}
+        var path = possiblePaths[key];
+        this.mapLocation = myGame.citiesData.citiesByName[path.arriving];
 
-        if (Phaser.Math.distanceSq(this.currentGoal.x, this.currentGoal.y, this.x, this.y) < DISTANCE_EPSILON) {
-            // You made it!
-            // XXX: http://www.html5gamedevs.com/topic/7332-how-to-stop-moveto/
-            // ehhh this really oughtta be a tween
-            this.x = this.currentGoal.x;
-            this.y = this.currentGoal.y;
-            this.pathIndex++;
-            if (this.pathIndex < this.mapLocation.waypoints.length) {
-                // Next in path
-                this.currentGoal = this.mapLocation.waypoints[this.pathIndex];
-                if (this.currentGoal == 'dateline') {  // special case teleport across the dateline
-                    var teleport = this.mapLocation.waypoints[this.pathIndex + 1];
-                    this.x = teleport.x;
-                    this.y = teleport.y;
-                    this.pathIndex += 2;
-                    this.currentGoal = this.mapLocation.waypoints[this.pathIndex];
-                }
-                this.game.physics.arcade.moveToXY(this, this.currentGoal.x, this.currentGoal.y, MOVE_SPEED);
-            }
-            else {
-                // In city
-                this.mapLocation = myGame.citiesData.citiesByName[this.mapLocation.arriving];
-                // console.log(this.frame + " arriving in", this.mapLocation);
-                this.currentGoal = null;
-                this.body.velocity.x = 0;
-                this.body.velocity.y = 0;
-            }
-        }
+        // Phaser prepends the current location to the waypoint list,
+        // so we have to clone it.
+        // wtf phaser
+        var tweenData = {
+            x: path.tweenData.x.slice(),
+            y: path.tweenData.y.slice(),
+        };
+
+        this.game.add.tween(this).to(tweenData, 1000, path.tweenData.easingFunction, true)
+            .interpolation(Phaser.Math.catmullRomInterpolation)
+            .onComplete.addOnce(this.embark, this);
     };
 
     myGame.OverworldCharacter = OverworldCharacter;
