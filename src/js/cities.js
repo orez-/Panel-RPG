@@ -1,3 +1,5 @@
+"use strict";
+
 window.myGame = window.myGame || {};
 
 (function(Phaser, myGame) {
@@ -256,7 +258,7 @@ window.myGame = window.myGame || {};
 
             var jump = (index - 1) / step;
             return jump + ((v - lower) / (upper - lower)) / step;
-        }
+        };
 
         path.getTween = function (sprite, speed) {
             // v = d / t
@@ -272,7 +274,7 @@ window.myGame = window.myGame || {};
             };
 
             return sprite.game.add.tween(sprite).to(positions, time, easingFunction, true)
-                .interpolation(Phaser.Math.catmullRomInterpolation)
+                .interpolation(Phaser.Math.catmullRomInterpolation);
         };
     });
 

@@ -1,7 +1,7 @@
+"use strict";
 window.myGame = window.myGame || {};
 
-const DISTANCE_EPSILON = 25;
-const MOVE_SPEED = 30;
+const MOVE_SPEED = 5;
 const NUM_CHARS = 6;
 (function(Phaser, myGame) {
 
@@ -33,7 +33,7 @@ const NUM_CHARS = 6;
         var path = possiblePaths[key];
         this.mapLocation = myGame.citiesData.citiesByName[path.arriving];
 
-        path.getTween(this, 5).onComplete.addOnce(this.embark, this);
+        path.getTween(this, MOVE_SPEED).onComplete.addOnce(this.embark, this);
     };
 
     myGame.OverworldCharacter = OverworldCharacter;

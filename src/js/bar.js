@@ -1,3 +1,4 @@
+"use strict";
 window.myGame = window.myGame || {};
 
 (function(Phaser, myGame) {
@@ -49,8 +50,8 @@ window.myGame = window.myGame || {};
         .onUpdateCallback(() => {
             this.color = Phaser.Color.interpolateColor(this.mainColor, endColor, 100, colorBlend.step, 1);
         })
-        .start()
-    }
+        .start();
+    };
 
     myGame.Bar = Bar;
 })(window.Phaser, window.myGame);

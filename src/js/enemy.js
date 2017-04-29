@@ -1,3 +1,4 @@
+"use strict";
 window.myGame = window.myGame || {};
 
 const IDLE_X = 70;
@@ -26,9 +27,9 @@ const IDLE_X = 70;
         var newCb = function() {
             this.sprite.frame = 0;
             cb();
-        }
+        };
         myGame.Combatant.prototype.lungeTo.call(this, x, y, duration, newCb);
-    }
+    };
 
     Enemy.prototype.enterAnimation = function (cb) {
         // Allow the enemy to make their entrance, after which the
@@ -43,7 +44,7 @@ const IDLE_X = 70;
         this.healthBar = new myGame.Bar(
             this.game, this.graphics, this, 'health', 0xCC0000, 0x111111,
             0, 0, 32);
-    }
+    };
 
     Enemy.prototype.attackAnimation = function (cb) {
         this.lungeTo(15, 70, 250, () => {
@@ -61,10 +62,10 @@ const IDLE_X = 70;
         }
     };
 
-    Enemy.prototype.resetBattleReady = function (argument) {
+    Enemy.prototype.resetBattleReady = function () {
         this.game.time.events.remove(this.activeTimer);
         this.active.value = 0;
-    }
+    };
 
     Enemy.prototype.die = function () {
         this.game.time.events.remove(this.activeTimer);
@@ -77,7 +78,7 @@ const IDLE_X = 70;
                 }, this
             );
         }, this);
-    }
+    };
 
     // Again, no render fn?
     Enemy.prototype.update = function () {
@@ -85,7 +86,7 @@ const IDLE_X = 70;
         if (this.healthBar) {
             this.healthBar.render();
         }
-    }
+    };
 
     myGame.Enemy = Enemy;
 })(window.Phaser, window.myGame);

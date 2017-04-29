@@ -1,5 +1,5 @@
+"use strict";
 window.myGame = window.myGame || {};
-
 
 (function(Phaser, myGame) {
     const FRAMES_WIDTH = 8;
@@ -10,7 +10,7 @@ window.myGame = window.myGame || {};
             frames.push(column + i * framesWidth);
         }
         return frames;
-    };
+    }
 
     const Adventurer = function (game, x, y) {
         this.idleX = x;
@@ -47,8 +47,8 @@ window.myGame = window.myGame || {};
         emitter.maxParticleSpeed.setTo(20, 10);
         emitter.minParticleScale = 1;
         emitter.maxParticleScale = 1;
-        return emitter
-    }
+        return emitter;
+    };
 
     Adventurer.prototype.walk = function() {
         this.sprite.animations.play('walk', 10, true);
@@ -63,10 +63,10 @@ window.myGame = window.myGame || {};
         this.activeTimer = this.game.time.events.loop(40, this.advanceActiveBar, this);
     };
 
-    Adventurer.prototype.resetBattleReady = function (argument) {
+    Adventurer.prototype.resetBattleReady = function () {
         this.game.time.events.remove(this.activeTimer);
         this.active.value = 0;
-    }
+    };
 
     Adventurer.prototype.advanceActiveBar = function () {
         this.active.value++;
@@ -82,7 +82,7 @@ window.myGame = window.myGame || {};
         this.game.time.events.remove(this.activeTimer);
         this.active.value = 0;
         this.deathAnimation();
-    }
+    };
 
     Adventurer.prototype.resumeBattleIdle = function () {
         if (this.parent.state === myGame.GameState.VICTORY) {
@@ -96,13 +96,13 @@ window.myGame = window.myGame || {};
         else {
             this.sprite.animations.play('battleIdle', 1, true);
         }
-    }
+    };
 
     Adventurer.prototype.deathAnimation = function () {
         this.sprite.animations.play('die', 10).onComplete.add(function () {
             this.sprite.animations.play('die2', 2);
         }, this);
-    }
+    };
 
     Adventurer.prototype.attackAnimation = function (cb) {
         this.sprite.animations.play('attack', 10);
@@ -115,7 +115,7 @@ window.myGame = window.myGame || {};
             moveBack.to({x: this.idleX}, 100).start();
         }, this);
         moveX.to({x: 65}, 100).start();
-    }
+    };
 
     Adventurer.prototype.damageMagicAnimation = function (cb) {
         const WIDTH = 3;
@@ -144,13 +144,13 @@ window.myGame = window.myGame || {};
 
                     // Heal the portal
                     sprite.play('close', 20).onComplete.add(function () {
-                        sprite.destroy()
+                        sprite.destroy();
                         this.resumeBattleIdle();
                     }, this);
                 }, this);
             }, this);
         }, this);
-    }
+    };
 
     Adventurer.prototype.healAnimation = function (cb) {
         this.sprite.animations.play('cast', 10).onComplete.addOnce(function () {
@@ -165,7 +165,7 @@ window.myGame = window.myGame || {};
                 this.resumeBattleIdle();
             }, this);
         }, this);
-    }
+    };
 
     Adventurer.prototype.quaffAnimation = function (cb) {
         this.sprite.animations.play('quaff', 1).onComplete.addOnce(function () {
@@ -174,7 +174,7 @@ window.myGame = window.myGame || {};
             }
             this.resumeBattleIdle();
         }, this);
-    }
+    };
 
     myGame.Adventurer = Adventurer;
 })(window.Phaser, window.myGame);
