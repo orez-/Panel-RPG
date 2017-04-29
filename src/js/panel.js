@@ -45,6 +45,7 @@ window.myGame = window.myGame || {};
         this.area.events.onInputOut.add(this.out, this);
 
         this.setState(myGame.GameState.WALKING);
+        this.scheduleRandomBattle();
     };
     Panel.prototype = Object.create(Phaser.Group.prototype);
     Panel.prototype.constructor = Panel;
@@ -93,6 +94,16 @@ window.myGame = window.myGame || {};
                 this.adventurer.heal(50);
             });
         }
+    };
+
+    Panel.prototype.scheduleRandomBattle = function() {
+        this.game.time.events.add(
+            this.game.rnd.integerInRange(10, 30) * Phaser.Timer.SECOND,
+            function () {
+                this.setState('BATTLE');
+            },
+            this
+        );
     };
 
     Panel.prototype.enemyAttack = function () {
@@ -147,9 +158,6 @@ window.myGame = window.myGame || {};
         }
         else if (this.state === myGame.GameState.VICTORY) {
             this.adventurer.resetBattleReady();
-            this.adventurer.victory = () => {
-                this.setState('WALKING');
-            };
         }
         else if (this.state === myGame.GameState.DEFEAT) {
             this.enemy.resetBattleReady();

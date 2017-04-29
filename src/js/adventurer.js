@@ -88,6 +88,7 @@ window.myGame = window.myGame || {};
         if (this.parent.state === myGame.GameState.VICTORY) {
             this.sprite.animations.play('celebrate', 10).onComplete.addOnce(function () {
                 this.parent.setState('WALKING');
+                this.parent.scheduleRandomBattle();
             }, this);
         }
         else if (this.parent.state === myGame.GameState.RESPITE) {
