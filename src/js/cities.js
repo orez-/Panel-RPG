@@ -303,12 +303,14 @@ window.myGame = window.myGame || {};
                 var tween = getTweenFunction(tweenData)(sprite, speed);
                 if (!lastTween) {
                     tween.start();
+                    sprite.currentTween = tween;
                 }
                 else {
                     lastTween.onComplete.addOnce(function () {
                         sprite.x = tweenData[0].x;
                         sprite.y = tweenData[0].y;
                         tween.start();
+                        sprite.currentTween = tween;
                     });
                 }
                 lastTween = tween;

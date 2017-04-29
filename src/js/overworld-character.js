@@ -26,6 +26,14 @@ const NUM_CHARS = 6;
         this.frame = this.playerId;
     };
 
+    OverworldCharacter.prototype.pause = function() {
+        this.currentTween.pause();
+    };
+
+    OverworldCharacter.prototype.resume = function() {
+        this.currentTween.resume();
+    };
+
     OverworldCharacter.prototype.embark = function() {
         var possiblePaths = myGame.citiesData.pathsFrom(this.mapLocation.name);
         var key = Phaser.ArrayUtils.getRandomItem(Object.keys(possiblePaths));

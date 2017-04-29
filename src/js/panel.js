@@ -119,6 +119,9 @@ window.myGame = window.myGame || {};
         }
         this.state = state;
         if (this.state === myGame.GameState.WALKING) {
+            if (this.worldCharacter) {
+                this.worldCharacter.resume();
+            }
             this.buttonGroup.deselect();
             this.background.beginScroll();
             this.adventurer.resetBattleReady();
@@ -132,6 +135,7 @@ window.myGame = window.myGame || {};
             this.enemy = this.add(new myGame.Enemy(this.game));
             this.adventurer.beginBattleAnimation();
             this.background.pauseScroll();
+            this.worldCharacter.pause();
             this.enemy.enterAnimation(() => {
                 this.adventurer.beginBattleReady();
                 this.enemy.beginBattleReady();
@@ -152,6 +156,7 @@ window.myGame = window.myGame || {};
         }
         else if (this.state === myGame.GameState.RESPITE) {
             this.background.pauseScroll();
+            this.worldCharacter.pause();
         }
     };
 
