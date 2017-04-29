@@ -1,3 +1,4 @@
+"use strict";
 window.myGame = window.myGame || {};
 
 (function(Phaser, myGame) {
@@ -15,9 +16,9 @@ window.myGame = window.myGame || {};
         this.scrollLoop = this.game.time.events.loop(40, this.advanceScene, this);
     };
 
-    Background.prototype.pauseScroll = function (argument) {
+    Background.prototype.pauseScroll = function () {
         this.game.time.events.remove(this.scrollLoop);
-    }
+    };
 
     Background.prototype.advanceScene = function () {
         this.leftPanel.x -= 1;

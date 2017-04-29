@@ -1,3 +1,4 @@
+"use strict";
 window.myGame = window.myGame || {};
 
 (function(Phaser, myGame) {
@@ -92,7 +93,7 @@ window.myGame = window.myGame || {};
                 this.adventurer.heal(50);
             });
         }
-    }
+    };
 
     Panel.prototype.enemyAttack = function () {
         this.enemy.attackAnimation(() => {
@@ -101,15 +102,15 @@ window.myGame = window.myGame || {};
                 this.setState('DEFEAT');
             }
         });
-    }
+    };
 
     Panel.prototype.over = function () {
         this.worldCharacter.highlight();
-    }
+    };
 
     Panel.prototype.out = function () {
         this.worldCharacter.dehighlight();
-    }
+    };
 
     Panel.prototype.setState = function (state) {
         var stateLookup = myGame.GameState[state];
@@ -152,7 +153,7 @@ window.myGame = window.myGame || {};
         else if (this.state === myGame.GameState.RESPITE) {
             this.background.pauseScroll();
         }
-    }
+    };
 
     // no render fn?
     Panel.prototype.update = function () {

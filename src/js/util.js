@@ -1,3 +1,4 @@
+"use strict";
 window.myGame = window.myGame || {};
 
 (function(Phaser, myGame) {
@@ -8,7 +9,7 @@ window.myGame = window.myGame || {};
             return {
                 distance: distance,
                 unitVector: new Phaser.Point((pt2.x - pt1.x) / distance, (pt2.y - pt1.x) / distance),
-            }
+            };
         }
     };
 

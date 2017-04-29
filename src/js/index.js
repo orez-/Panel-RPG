@@ -1,3 +1,4 @@
+"use strict";
 window.myGame = window.myGame || {};
 
 (function(Phaser, myGame) {
@@ -22,15 +23,15 @@ window.myGame = window.myGame || {};
         game.physics.startSystem(Phaser.Physics.ARCADE);
 
         var panels = [
-            new myGame.Panel(this, 0, 0, 0),
-            new myGame.Panel(this, 0, 133, 1),
-            new myGame.Panel(this, 0, 266, 2),
-            new myGame.Panel(this, 600, 0, 3),
-            new myGame.Panel(this, 600, 133, 4),
-            new myGame.Panel(this, 600, 266, 5),
+            new myGame.Panel(game, 0, 0, 0),
+            new myGame.Panel(game, 0, 133, 1),
+            new myGame.Panel(game, 0, 266, 2),
+            new myGame.Panel(game, 600, 0, 3),
+            new myGame.Panel(game, 600, 133, 4),
+            new myGame.Panel(game, 600, 266, 5),
         ];
         myGame.panels = panels;  // for debug
-        new myGame.WorldMap(this, myGame.citiesData, panels);
+        worldMap = new myGame.WorldMap(game, myGame.citiesData, panels);
 
         game.stage.smoothed = false;
         game.stage.disableVisibilityChange = true;
@@ -39,10 +40,6 @@ window.myGame = window.myGame || {};
     }
 
     function update() {
-    }
-
-    function highlightCity(_, city) {
-        city.frame = 1;
     }
 
 })(window.Phaser, window.myGame);

@@ -1,3 +1,4 @@
+"use strict";
 window.myGame = window.myGame || {};
 
 (function(Phaser, myGame) {
@@ -35,9 +36,9 @@ window.myGame = window.myGame || {};
 
     Combatant.prototype.heal = function (amount) {
         this.health.value = Math.min(this.health.max, this.health.value + amount);
-    }
+    };
 
-    Combatant.prototype.die = function () {}
+    Combatant.prototype.die = function () {};
 
     Combatant.prototype.lungeTo = function (x, y, duration, cb) {
         // y is the height of the jump
@@ -45,13 +46,13 @@ window.myGame = window.myGame || {};
         var moveY = this.game.add.tween(this);
         moveX.to({x: x}, duration);
         moveY.to({y: y}, duration, function (v) {
-            return -v * (v - 1) * 4
+            return -v * (v - 1) * 4;
         });
 
         moveY.onComplete.add(cb, this);
         moveX.start();
         moveY.start();
-    }
+    };
 
     myGame.Combatant = Combatant;
 })(window.Phaser, window.myGame);

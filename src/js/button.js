@@ -1,3 +1,4 @@
+"use strict";
 window.myGame = window.myGame || {};
 
 const NUM_ICONS = 5;
@@ -35,7 +36,7 @@ const NUM_ICONS = 5;
             return true;
         }
         return false;
-    }
+    };
 
     Button.prototype.deselect = function () {
         this.frame = this.frameColumn;
