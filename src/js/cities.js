@@ -28,7 +28,7 @@ window.myGame = window.myGame || {};
         _paths: {  // {departing: {arriving: path}}
             One: {
                 Bar: {waypoints: []},
-                // Foo: {waypoints: [{x: 0, y: 95}, 'dateline', {x: 400, y: 90}]},
+                Foo: {waypoints: [{x: 0, y: 95}, 'dateline', {x: 400, y: 90}]},
                 Two: {waypoints: [{x: 46, y: 90}]},
                 Zambia: {},
             },
@@ -89,8 +89,8 @@ window.myGame = window.myGame || {};
                 Bazinga: null,
                 "Bob Saget": {waypoints: [{x: 108, y: 207}, {x: 132, y: 224}, {x: 180, y: 227}]},
                 Salamander: {waypoints: [{x: 88, y: 220}, {x: 92, y: 247}, {x: 105, y: 262}, {x: 131, y: 267}]},
-                // Zaire: {waypoints: [{x: 0, y: 205}, 'dateline', {x: 400, y: 203}]},
-                // Summarily: {waypoints: [{x: 0, y: 263}, 'dateline', {x: 400, y: 260}]},
+                Zaire: {waypoints: [{x: 0, y: 205}, 'dateline', {x: 400, y: 203}]},
+                Summarily: {waypoints: [{x: 0, y: 263}, 'dateline', {x: 400, y: 260}]},
             },
             Zaire: {
                 Bang: null,
@@ -111,7 +111,7 @@ window.myGame = window.myGame || {};
                 "Sim City": {waypoints: [{x: 226, y: 292}]},
             },
             Salamander: {
-                // Summarily: {waypoints: [{x: 117, y: 311}, {x: 0, y: 312}, 'dateline', {x: 400, y: 312}]},
+                Summarily: {waypoints: [{x: 117, y: 311}, {x: 0, y: 312}, 'dateline', {x: 400, y: 312}]},
                 Zambia: null,
                 "Bob Saget": null,
                 Soonish: {waypoints: [{x: 165, y: 279}, {x: 181, y: 293}, {x: 178, y: 320}]},
@@ -212,7 +212,7 @@ window.myGame = window.myGame || {};
     });
 
     // Add tween functions
-    iteratePaths(function (path, departingCity, arrivingCity) {
+    var getTweenFunction = function (tweenData) {
         // Enormously critical that everything is `var`'d-up here.
         var xs = [];
         var ys = [];
@@ -222,7 +222,7 @@ window.myGame = window.myGame || {};
 
         var lastX = null;
         var lastY = null;
-        path.waypoints.forEach(function (elem) {
+        tweenData.forEach(function (elem) {
             if (lastX !== null) {
                 xs.push(elem.x);
                 ys.push(elem.y);
@@ -260,7 +260,7 @@ window.myGame = window.myGame || {};
             return jump + ((v - lower) / (upper - lower)) / step;
         };
 
-        path.getTween = function (sprite, speed) {
+        return function (sprite, speed) {
             // v = d / t
             // t = d / v
             var time = totalDistance * 1000 / speed;
@@ -273,8 +273,47 @@ window.myGame = window.myGame || {};
                 y: ys.slice(),
             };
 
-            return sprite.game.add.tween(sprite).to(positions, time, easingFunction, true)
+            return sprite.game.add.tween(sprite).to(positions, time, easingFunction)
                 .interpolation(Phaser.Math.catmullRomInterpolation);
+        };
+    };
+
+    iteratePaths(function (path) {
+        var tweens = [];
+        var curTween = null;
+        path.waypoints.forEach(function (elem) {
+            if (!curTween) {
+                curTween = [];
+            }
+            if (elem === 'dateline') {
+                tweens.push(curTween);
+                curTween = null;
+            }
+            else {
+                curTween.push({x: elem.x, y: elem.y});
+            }
+        });
+        if (curTween) {
+            tweens.push(curTween);
+        }
+
+        path.getTween = function(sprite, speed) {
+            var lastTween = null;
+            tweens.forEach(function(tweenData) {
+                var tween = getTweenFunction(tweenData)(sprite, speed);
+                if (!lastTween) {
+                    tween.start();
+                }
+                else {
+                    lastTween.onComplete.addOnce(function () {
+                        sprite.x = tweenData[0].x;
+                        sprite.y = tweenData[0].y;
+                        tween.start();
+                    });
+                }
+                lastTween = tween;
+            });
+            return lastTween;
         };
     });
 
